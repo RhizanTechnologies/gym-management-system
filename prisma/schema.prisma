@@ -1,0 +1,473 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tenant {
+  id                     String   @id @default(cuid())
+  name                   String
+  slug                   String   @unique
+  logo                   String?
+  address                String
+  phone                  String
+  email                  String
+  currency               String   @default("USD")
+  currencySymbol         String   @default("$")
+  maxCapacity            Int      @default(150)
+  monthlySubscriptionFee Float    @default(49.00)
+  planTier               String   @default("PRO") // STARTER, PRO, ENTERPRISE
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  users         User[]
+  members       Member[]
+  plans         MembershipPlan[]
+  subscriptions MemberSubscription[]
+  checkIns      CheckInLog[]
+  lockers       Locker[]
+  products      POSProduct[]
+  sales         POSSale[]
+  invoices      Invoice[]
+  receipts      Receipt[]
+  corrections   FinancialCorrection[]
+  paymentPolicy PaymentPolicy?
+  expenses      Expense[]
+  equipment     Equipment[]
+  tickets       MaintenanceTicket[]
+  shifts        StaffShift[]
+  leads         Lead[]
+  branches      Branch[]
+  auditEvents   AuditEvent[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  tenantId  String
+  email     String
+  password  String   @default("password123")
+  name      String
+  role      String   @default("RECEPTIONIST") // SUPER_ADMIN, GYM_OWNER, RECEPTIONIST, TRAINER, MEMBER
+  phone     String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+}
+
+model MembershipPlan {
+  id              String   @id @default(cuid())
+  tenantId        String
+  name            String
+  description     String
+  durationDays    Int
+  price           Float
+  admissionFee    Float    @default(0.0)
+  maxVisitsPerDay Int      @default(1)
+  includesClasses Boolean  @default(false)
+  color           String   @default("#3B82F6")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant        Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  subscriptions MemberSubscription[]
+
+  @@index([tenantId])
+}
+
+model Member {
+  id                           String   @id @default(cuid())
+  tenantId                     String
+  memberNumber                 String
+  firstName                    String
+  lastName                     String
+  email                        String?
+  phone                        String
+  gender                       String?
+  dateOfBirth                  DateTime?
+  address                      String?
+  joinDate                     DateTime @default(now())
+  emergencyContactName         String?
+  emergencyContactRelationship String?
+  emergencyContactPhone        String?
+  medicalNotes                 String?
+  consentGiven                 Boolean  @default(true)
+  consentDate                  DateTime?
+  consentPolicyVersion         String   @default("v1.0")
+  qrCodeToken                  String   @unique
+  profileImage                 String?
+  photoIdReference             String?
+  notes                        String?
+  status                       String   @default("ACTIVE") // ACTIVE, EXPIRING_SOON, EXPIRED, FROZEN, CANCELLED
+  currentPlanId                String?
+  currentPlanName              String?
+  subscriptionStart            DateTime?
+  subscriptionEnd              DateTime?
+  daysRemaining                Int      @default(0)
+  dueBalance                   Float    @default(0.0)
+  assignedLockerNumber         String?
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+
+  tenant        Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  subscriptions MemberSubscription[]
+  checkIns      CheckInLog[]
+  invoices      Invoice[]
+  receipts      Receipt[]
+
+  @@index([tenantId])
+  @@index([phone])
+}
+
+model MemberSubscription {
+  id               String   @id @default(cuid())
+  tenantId         String
+  memberId         String
+  planId           String
+  planName         String
+  startDate        DateTime
+  endDate          DateTime
+  pricePaid        Float
+  status           String   @default("ACTIVE") // ACTIVE, EXPIRED, FROZEN, CANCELLED
+  paymentMethod    String   @default("CASH") // CASH, CARD, MOBILE_MONEY, BANK_TRANSFER
+  paymentReference String?
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  member Member         @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  plan   MembershipPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([memberId])
+}
+
+model CheckInLog {
+  id            String   @id @default(cuid())
+  tenantId      String
+  memberId      String
+  memberName    String
+  memberNumber  String
+  timestamp     DateTime @default(now())
+  status        String   // GRANTED, DENIED_EXPIRED, DENIED_DEBT, DENIED_NOT_FOUND, WARNING_EXPIRING
+  failureReason String?
+  method        String   @default("QR_SCAN") // QR_SCAN, BARCODE, MANUAL_OVERRIDE
+  lockerAssigned String?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([memberId])
+  @@index([timestamp])
+}
+
+model Locker {
+  id          String    @id @default(cuid())
+  tenantId    String
+  number      String
+  zone        String    @default("Main")
+  status      String    @default("AVAILABLE") // AVAILABLE, OCCUPIED, MAINTENANCE, OVERDUE
+  memberId    String?
+  memberName  String?
+  memberPhone String?
+  assignedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, number])
+  @@index([tenantId])
+}
+
+model POSProduct {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  category  String   // DRINK, SUPPLEMENT, ACCESSORY, TRAINING
+  price     Float
+  stock     Int      @default(0)
+  sku       String
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  items  POSSaleItem[]
+
+  @@index([tenantId])
+}
+
+model POSSale {
+  id            String   @id @default(cuid())
+  tenantId      String
+  invoiceNumber String   @unique
+  memberId      String?
+  memberName    String?
+  totalAmount   Float
+  paymentMethod String   @default("CASH")
+  cashierName   String   @default("Front Desk")
+  createdAt     DateTime @default(now())
+
+  tenant Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  items  POSSaleItem[]
+
+  @@index([tenantId])
+}
+
+model POSSaleItem {
+  id          String @id @default(cuid())
+  saleId      String
+  productId   String
+  productName String
+  unitPrice   Float
+  quantity    Int
+  subtotal    Float
+
+  sale    POSSale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product POSProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([saleId])
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  tenantId       String
+  invoiceNumber  String   @unique
+  memberId       String?
+  memberName     String
+  type           String   // MEMBERSHIP, POS, LOCKER
+  amount         Float
+  paidAmount     Float
+  balance        Float    @default(0.0)
+  subtotal       Float?
+  discount       Float?   @default(0.0)
+  discountReason String?
+  tax            Float?   @default(0.0)
+  receiptId      String?
+  receiptNumber  String?
+  recordedBy     String?  @default("Front Desk")
+  recordedById   String?
+  notes          String?
+  items          Json?
+  status         String   @default("PAID") // PAID, PARTIAL, UNPAID, VOIDED, REFUNDED
+  paymentMethod  String   @default("CASH")
+  dueDate        DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tenant Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  member Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([memberId])
+  @@index([invoiceNumber])
+}
+
+model Expense {
+  id            String   @id @default(cuid())
+  tenantId      String
+  title         String
+  category      String   // UTILITIES, EQUIPMENT_REPAIR, PAYROLL, INVENTORY, FACILITY_RENT, MARKETING, OTHER
+  amount        Float
+  paymentMethod String   @default("CASH")
+  vendor        String
+  date          DateTime @default(now())
+  loggedBy      String   @default("Manager")
+  receiptNumber String?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+}
+
+model Equipment {
+  id              String   @id @default(cuid())
+  tenantId        String
+  name            String
+  category        String   // CARDIO, STRENGTH, FREE_WEIGHTS, RECOVERY, OTHER
+  serialNumber    String
+  purchaseDate    DateTime
+  purchaseCost    Float
+  warrantyExpires DateTime?
+  status          String   @default("OPERATIONAL") // OPERATIONAL, UNDER_MAINTENANCE, OUT_OF_SERVICE
+  location        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant  Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tickets MaintenanceTicket[]
+
+  @@index([tenantId])
+}
+
+model MaintenanceTicket {
+  id              String    @id @default(cuid())
+  tenantId        String
+  equipmentId     String
+  title           String
+  description     String
+  priority        String    @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status          String    @default("OPEN")   // OPEN, IN_PROGRESS, RESOLVED
+  reportedBy      String
+  reportedAt      DateTime  @default(now())
+  resolvedAt      DateTime?
+  resolvedBy      String?
+  resolutionNotes String?
+  resolutionCost  Float?
+
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  equipment Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([equipmentId])
+}
+
+model StaffShift {
+  id          String    @id @default(cuid())
+  tenantId    String
+  userId      String
+  userName    String
+  shiftType   String    @default("MORNING") // MORNING, EVENING, CUSTOM
+  date        String    // YYYY-MM-DD
+  startTime   String    // HH:MM
+  endTime     String    // HH:MM
+  status      String    @default("SCHEDULED") // SCHEDULED, CLOCKED_IN, COMPLETED, ABSENT
+  clockedInAt DateTime?
+  clockedOutAt DateTime?
+  notes       String?
+  createdAt   DateTime  @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([userId])
+}
+
+model Lead {
+  id            String   @id @default(cuid())
+  tenantId      String
+  name          String
+  phone         String
+  email         String?
+  preferredDate String?
+  interest      String?
+  status        String   @default("NEW") // NEW, CONTACTED, CONVERTED
+  createdAt     DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  code      String
+  address   String
+  phone     String
+  isMain    Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  tenantId   String
+  branchId   String?
+  actorId    String
+  actorName  String
+  actorRole  String
+  action     String   // ROLE_CHANGE, USER_CREATE, PACKAGE_UPDATE, EXPENSE_RECORDED, etc.
+  entityType String   // USER, PLAN, EXPENSE, MEMBER, etc.
+  entityId   String?
+  details    String
+  ipAddress  String?
+  timestamp  DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([actorId])
+  @@index([action])
+  @@index([timestamp])
+}
+
+model Receipt {
+  id               String   @id @default(cuid())
+  tenantId         String
+  receiptNumber    String   @unique
+  invoiceId        String
+  invoiceNumber    String
+  memberId         String?
+  memberName       String
+  amount           Float
+  amountPaid       Float?
+  paymentMethod    String   @default("CASH")
+  paymentReference String?
+  receivedBy       String
+  receivedById     String
+  items            Json?
+  notes            String?
+  createdAt        DateTime @default(now())
+
+  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  member           Member?  @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([receiptNumber])
+  @@index([invoiceId])
+}
+
+model FinancialCorrection {
+  id                    String   @id @default(cuid())
+  tenantId              String
+  referenceNumber       String   @unique
+  originalInvoiceId     String
+  originalInvoiceNumber String
+  type                  String   // VOID, REFUND, ADJUSTMENT
+  amount                Float
+  reason                String
+  actorId               String
+  actorName             String
+  actorRole             String
+  createdAt             DateTime @default(now())
+
+  tenant                Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([originalInvoiceId])
+}
+
+model PaymentPolicy {
+  id                       String   @id @default(cuid())
+  tenantId                 String   @unique
+  allowPartialActivation   Boolean  @default(true)
+  minInitialPaymentPercent Float    @default(50.0)
+  maxAllowedBalance        Float    @default(100.0)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  tenant                   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+
