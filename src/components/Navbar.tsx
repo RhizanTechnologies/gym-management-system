@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   Receipt,
   Wrench,
+  UserCircle,
 } from 'lucide-react';
 import { OperationalAlertsDropdown } from './OperationalAlertsDropdown';
 import { LanguageToggle } from './LanguageToggle';
@@ -278,7 +279,15 @@ export function Navbar() {
                     ))}
                   </div>
 
-                  <div className="mt-2 border-t border-[#E5E7EB] pt-1.5">
+                  <div className="mt-2 border-t border-[#E5E7EB] pt-1.5 space-y-0.5">
+                    <Link
+                      href="/profile"
+                      onClick={() => setShowRoleMenu(false)}
+                      className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-[12px] font-medium text-[#1F2937] hover:bg-[#F8FAFC] transition-colors"
+                    >
+                      <UserCircle className="h-3.5 w-3.5 text-[#0F766E]" />
+                      <span>My Profile</span>
+                    </Link>
                     <button
                       onClick={logout}
                       className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-[12px] font-medium text-[#1F2937] hover:bg-[#F8FAFC] transition-colors"

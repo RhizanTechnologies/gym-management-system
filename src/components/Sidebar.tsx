@@ -23,6 +23,7 @@ import {
   Bell,
   FileText,
   Dumbbell,
+  UserCircle,
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -138,6 +139,12 @@ export function Sidebar() {
       badge: 'SaaS',
       roles: ['SUPER_ADMIN'],
     },
+    {
+      label: isAmharic ? 'መገለጫ' : 'My Profile',
+      href: '/profile',
+      icon: UserCircle,
+      roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'FINANCE_OFFICER', 'TRAINER', 'MAINTENANCE_STAFF', 'MEMBER'],
+    },
   ];
 
   const visibleItems = allNavItems.filter((item) =>
@@ -221,15 +228,17 @@ export function Sidebar() {
 
       {/* User Status Footer */}
       {currentUser && (
-        <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-2.5 flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-full bg-[#0F766E] flex items-center justify-center text-white text-xs font-bold uppercase shrink-0 shadow-xs">
-            {currentUser.name.charAt(0)}
+        <Link href="/profile" className="block rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-2.5 hover:bg-[#0F766E]/5 hover:border-[#0F766E]/30 transition-colors group">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-full bg-[#0F766E] flex items-center justify-center text-white text-xs font-bold uppercase shrink-0 shadow-xs">
+              {currentUser.name.charAt(0)}
+            </div>
+            <div className="overflow-hidden min-w-0">
+              <p className="font-semibold text-[13px] text-[#1F2937] truncate group-hover:text-[#0F766E] transition-colors">{currentUser.name}</p>
+              <p className="text-[11px] text-[#0F766E] font-medium truncate">{currentUser.role.replace('_', ' ')}</p>
+            </div>
           </div>
-          <div className="overflow-hidden min-w-0">
-            <p className="font-semibold text-[13px] text-[#1F2937] truncate">{currentUser.name}</p>
-            <p className="text-[11px] text-[#0F766E] font-medium truncate">{currentUser.role.replace('_', ' ')}</p>
-          </div>
-        </div>
+        </Link>
       )}
     </aside>
   );

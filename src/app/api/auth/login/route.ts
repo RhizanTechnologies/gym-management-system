@@ -21,6 +21,10 @@ export async function POST(request: Request) {
           where: { email: cleanEmail },
         });
         if (dbUser) {
+          // Verify password against database
+          if (password && dbUser.password !== password) {
+            return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
+          }
           const user = {
             id: dbUser.id,
             tenantId: dbUser.tenantId,

@@ -3,6 +3,17 @@ import { db } from '@/lib/storage';
 import { prisma } from '@/lib/prisma';
 import { authorizeServerRequest } from '@/lib/rbac';
 import { User } from '@/lib/types';
+import crypto from 'crypto';
+
+function generateSecurePassword(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  const bytes = crypto.randomBytes(10);
+  let password = '';
+  for (let i = 0; i < 10; i++) {
+    password += chars[bytes[i] % chars.length];
+  }
+  return password;
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -69,6 +80,7 @@ export async function POST(request: NextRequest) {
     const cleanName = body.name.trim();
 
     let newUser: User;
+    const generatedPassword = body.password || generateSecurePassword();
 
     // 1. Direct database persistence when DATABASE_URL is available
     if (process.env.DATABASE_URL && !process.env.VITEST) {
@@ -91,7 +103,7 @@ export async function POST(request: NextRequest) {
           email: cleanEmail,
           role: body.role,
           phone: body.phone?.trim() || null,
-          password: body.password || 'password123',
+          password: generatedPassword,
         },
       });
 
@@ -135,7 +147,7 @@ export async function POST(request: NextRequest) {
       details: `Created staff user '${newUser.name}' with role '${newUser.role}' (${newUser.email})`,
     });
 
-    return NextResponse.json({ user: newUser }, { status: 201 });
+    return NextResponse.json({ user: newUser, generatedPassword }, { status: 201 });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to create staff user';
     return NextResponse.json({ error: message }, { status: 500 });
