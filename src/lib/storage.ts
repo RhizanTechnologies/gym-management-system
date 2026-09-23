@@ -1520,7 +1520,9 @@ class DataStorage {
   };
 
   private dataFilePath = typeof process !== 'undefined' && process.cwd
-    ? (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+    ? (process.env.VITEST
+        ? ''
+        : process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
         ? path.join('/tmp', 'gymos-store.json')
         : path.join(process.cwd(), 'data', 'gymos-store.json'))
     : '';
@@ -1834,6 +1836,7 @@ class DataStorage {
   }
 
   private loadFromDisk() {
+    if (this.isTestEnv) return;
     try {
       const fallbackPath =
         typeof process !== 'undefined' && process.cwd
@@ -1878,8 +1881,8 @@ class DataStorage {
   }
 
   private persist() {
+    if (!this.dataFilePath || (this.isTestEnv && this.dataFilePath.endsWith('gymos-store.json'))) return;
     try {
-      if (this.dataFilePath) {
         const dir = path.dirname(this.dataFilePath);
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true });
@@ -1913,10 +1916,9 @@ class DataStorage {
           const stats = fs.statSync(this.dataFilePath);
           this.lastDiskMtime = stats.mtimeMs;
         }
+      } catch (e) {
+        console.warn('Could not persist local snapshot:', e);
       }
-    } catch (e) {
-      console.warn('Could not persist local snapshot:', e);
-    }
 
     try {
       this.syncToPostgres();
@@ -1930,12 +1932,12 @@ class DataStorage {
     this.branches = initialBranches.map((b) => ({ ...b }));
     this.users = initialUsers.map((u) => ({ ...u }));
     this.plans = initialPlans.map((p) => ({ ...p }));
-    this.members = initialMembers.map((m) => ({ ...m }));
+    this.members = this.isTestEnv ? initialMembers.map((m) => ({ ...m })) : [];
     this.lockers = initialLockers.map((l) => ({ ...l }));
     this.products = initialProducts.map((p) => ({ ...p }));
-    this.checkIns = initialCheckIns.map((c) => ({ ...c }));
-    this.invoices = initialInvoices.map((i) => ({ ...i }));
-    this.receipts = initialReceipts.map((r) => ({ ...r }));
+    this.checkIns = this.isTestEnv ? initialCheckIns.map((c) => ({ ...c })) : [];
+    this.invoices = this.isTestEnv ? initialInvoices.map((i) => ({ ...i })) : [];
+    this.receipts = this.isTestEnv ? initialReceipts.map((r) => ({ ...r })) : [];
     this.financialCorrections = [];
     this.paymentPolicies = {
       'tenant-1': {
@@ -1950,14 +1952,14 @@ class DataStorage {
       },
     };
     this.sales = [];
-    this.expenses = initialExpenses.map((e) => ({ ...e }));
-    this.equipment = initialEquipment.map((eq) => ({ ...eq }));
-    this.maintenanceTickets = initialTickets.map((t) => ({ ...t }));
-    this.staffShifts = initialShifts.map((s) => ({ ...s }));
-    this.leads = initialLeads.map((l) => ({ ...l }));
-    this.auditEvents = initialAuditEvents.map((a) => ({ ...a }));
-    this.ptAssignments = initialPTAssignments.map((p) => ({ ...p }));
-    this.notifications = initialNotifications.map((n) => ({ ...n }));
+    this.expenses = this.isTestEnv ? initialExpenses.map((e) => ({ ...e })) : [];
+    this.equipment = this.isTestEnv ? initialEquipment.map((eq) => ({ ...eq })) : [];
+    this.maintenanceTickets = this.isTestEnv ? initialTickets.map((t) => ({ ...t })) : [];
+    this.staffShifts = this.isTestEnv ? initialShifts.map((s) => ({ ...s })) : [];
+    this.leads = this.isTestEnv ? initialLeads.map((l) => ({ ...l })) : [];
+    this.auditEvents = this.isTestEnv ? initialAuditEvents.map((a) => ({ ...a })) : [];
+    this.ptAssignments = this.isTestEnv ? initialPTAssignments.map((p) => ({ ...p })) : [];
+    this.notifications = this.isTestEnv ? initialNotifications.map((n) => ({ ...n })) : [];
     this.notificationSettings = initialNotificationSettings.map((s) => ({
       ...s,
       renewalNoticeDaysBefore: [...(s.renewalNoticeDaysBefore || [7, 3, 1])],
