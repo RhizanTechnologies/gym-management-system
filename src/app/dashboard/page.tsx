@@ -280,42 +280,42 @@ export default function DashboardPage() {
 
       {/* 2. Empty / First-Use Dashboard Guided State (Criterion 8) */}
       {dashboard?.isFirstUse && (
-        <div className="bg-gradient-to-r from-emerald-900/30 to-teal-900/30 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden">
+        <div className="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-6 relative overflow-hidden shadow-xs">
           <div className="max-w-2xl">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
               Welcome to GymOS!
             </span>
-            <h2 className="text-xl font-bold text-white mt-2">Let&apos;s get your facility up and running</h2>
-            <p className="text-sm text-slate-300 mt-1">
+            <h2 className="text-xl font-bold text-slate-900 mt-2">Let&apos;s get your facility up and running</h2>
+            <p className="text-sm text-slate-600 mt-1">
               Your dashboard currently has no records. Follow these meaningful steps to get started:
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
               <button
                 onClick={() => setShowNewMemberModal(true)}
-                className="p-3 bg-slate-800/80 hover:bg-slate-800 border border-slate-700 rounded-xl text-left transition"
+                className="p-3 bg-white hover:bg-emerald-50/50 border border-slate-200 rounded-xl text-left transition shadow-xs"
               >
-                <UserPlus className="w-5 h-5 text-emerald-400 mb-1" />
-                <div className="text-xs font-bold text-white">1. Register Member</div>
-                <div className="text-[11px] text-slate-400">Enroll your first member</div>
+                <UserPlus className="w-5 h-5 text-emerald-600 mb-1" />
+                <div className="text-xs font-bold text-slate-900">1. Register Member</div>
+                <div className="text-[11px] text-slate-500">Enroll your first member</div>
               </button>
 
               <Link
                 href="/plans"
-                className="p-3 bg-slate-800/80 hover:bg-slate-800 border border-slate-700 rounded-xl text-left transition"
+                className="p-3 bg-white hover:bg-emerald-50/50 border border-slate-200 rounded-xl text-left transition shadow-xs"
               >
-                <Store className="w-5 h-5 text-blue-400 mb-1" />
-                <div className="text-xs font-bold text-white">2. Set Up Plans</div>
-                <div className="text-[11px] text-slate-400">Configure prices & tiers</div>
+                <Store className="w-5 h-5 text-blue-600 mb-1" />
+                <div className="text-xs font-bold text-slate-900">2. Set Up Plans</div>
+                <div className="text-[11px] text-slate-500">Configure prices & tiers</div>
               </Link>
 
               <Link
                 href="/checkin"
-                className="p-3 bg-slate-800/80 hover:bg-slate-800 border border-slate-700 rounded-xl text-left transition"
+                className="p-3 bg-white hover:bg-emerald-50/50 border border-slate-200 rounded-xl text-left transition shadow-xs"
               >
-                <QrCode className="w-5 h-5 text-purple-400 mb-1" />
-                <div className="text-xs font-bold text-white">3. Check-In Desk</div>
-                <div className="text-[11px] text-slate-400">Test reception scanning</div>
+                <QrCode className="w-5 h-5 text-purple-600 mb-1" />
+                <div className="text-xs font-bold text-slate-900">3. Check-In Desk</div>
+                <div className="text-[11px] text-slate-500">Test reception scanning</div>
               </Link>
             </div>
           </div>

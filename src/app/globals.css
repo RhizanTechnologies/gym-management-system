@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* 3-Color System per docs/03-design-system.md */
   --color-primary: #0F766E; /* Deep Teal */
