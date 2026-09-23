@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { Member, MembershipPlan, Locker } from '@/lib/types';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatCurrency } from '@/lib/utils';
 import { MemberCardModal } from '@/components/MemberCardModal';
 import { NewMemberModal } from '@/components/NewMemberModal';
 import { EditMemberModal } from '@/components/EditMemberModal';
@@ -374,9 +374,13 @@ export default function MembersPage() {
                     {/* Balance */}
                     <td className="px-4 py-3.5">
                       {member.dueBalance > 0 ? (
-                        <span className="font-extrabold text-slate-900">${member.dueBalance.toFixed(2)}</span>
+                        <span className="font-extrabold text-slate-900">
+                          {formatCurrency(member.dueBalance, currentTenant?.currencySymbol, currentTenant?.currency)}
+                        </span>
                       ) : (
-                        <span className="text-slate-400">$0.00</span>
+                        <span className="text-slate-400">
+                          {formatCurrency(0, currentTenant?.currencySymbol, currentTenant?.currency)}
+                        </span>
                       )}
                     </td>
 

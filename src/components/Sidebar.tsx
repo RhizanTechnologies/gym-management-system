@@ -159,7 +159,7 @@ export function Sidebar() {
           <div className="mt-2.5 flex items-center justify-between border-t border-[#E5E7EB] pt-2 text-[12px] text-[#1F2937]/70">
             <span>Cap: {currentTenant.maxCapacity}</span>
             <span className="font-semibold text-[#0F766E]">
-              {currentTenant.currency} {currentTenant.currencySymbol}
+              {currentTenant.currencySymbol || currentTenant.currency || 'ETB'}
             </span>
           </div>
         </div>

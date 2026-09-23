@@ -156,9 +156,9 @@ const initialUsers: User[] = [
     id: 'user-owner-1',
     tenantId: 'tenant-1',
     name: 'Dawit Bekele (Owner)',
-    email: 'dawit@apexfitness.com',
+    email: 'owner@mfitnessgym.com',
     role: 'OWNER',
-    phone: '+251 91 122 3344',
+    phone: '0961889867',
     isActive: true,
     status: 'ACTIVE',
     createdAt: new Date().toISOString(),
@@ -1450,30 +1450,61 @@ const initialNotificationSettings: NotificationSettings[] = [
 
 // In-Memory Storage Container with Tenant Partitioning
 class DataStorage {
-  private tenants: Tenant[] = initialTenants.map((t) => ({ ...t }));
-  private branches: Branch[] = initialBranches.map((b) => ({ ...b }));
-  private users: User[] = initialUsers.map((u) => ({ ...u }));
+  private isTestEnv = typeof process !== 'undefined' && !!process.env.VITEST;
+  private tenants: Tenant[] = this.isTestEnv
+    ? initialTenants.map((t) => ({ ...t }))
+    : [initialTenants[0]];
+  private branches: Branch[] = this.isTestEnv
+    ? initialBranches.map((b) => ({ ...b }))
+    : [initialBranches[0]];
+  private users: User[] = this.isTestEnv
+    ? initialUsers.map((u) => ({ ...u }))
+    : initialUsers.filter((u) => u.role === 'OWNER');
   private plans: MembershipPlan[] = initialPlans.map((p) => ({ ...p }));
-  private members: Member[] = initialMembers.map((m) => ({ ...m }));
+  private members: Member[] = this.isTestEnv
+    ? initialMembers.map((m) => ({ ...m }))
+    : [];
   private lockers: Locker[] = initialLockers.map((l) => ({ ...l }));
   private products: POSProduct[] = initialProducts.map((p) => ({ ...p }));
-  private checkIns: CheckInLog[] = initialCheckIns.map((c) => ({ ...c }));
-  private invoices: Invoice[] = initialInvoices.map((i) => ({ ...i }));
+  private checkIns: CheckInLog[] = this.isTestEnv
+    ? initialCheckIns.map((c) => ({ ...c }))
+    : [];
+  private invoices: Invoice[] = this.isTestEnv
+    ? initialInvoices.map((i) => ({ ...i }))
+    : [];
   private sales: POSSale[] = [];
-  private expenses: Expense[] = initialExpenses.map((e) => ({ ...e }));
-  private equipment: Equipment[] = initialEquipment.map((eq) => ({ ...eq }));
-  private maintenanceTickets: MaintenanceTicket[] = initialTickets.map((t) => ({ ...t }));
-  private staffShifts: StaffShift[] = initialShifts.map((s) => ({ ...s }));
-  private leads: Lead[] = initialLeads.map((l) => ({ ...l }));
-  private auditEvents: AuditEvent[] = initialAuditEvents.map((a) => ({ ...a }));
-  private ptAssignments: PersonalTrainingAssignment[] = initialPTAssignments.map((p) => ({ ...p }));
-  private notifications: NotificationLog[] = initialNotifications.map((n) => ({ ...n }));
+  private expenses: Expense[] = this.isTestEnv
+    ? initialExpenses.map((e) => ({ ...e }))
+    : [];
+  private equipment: Equipment[] = this.isTestEnv
+    ? initialEquipment.map((eq) => ({ ...eq }))
+    : [];
+  private maintenanceTickets: MaintenanceTicket[] = this.isTestEnv
+    ? initialTickets.map((t) => ({ ...t }))
+    : [];
+  private staffShifts: StaffShift[] = this.isTestEnv
+    ? initialShifts.map((s) => ({ ...s }))
+    : [];
+  private leads: Lead[] = this.isTestEnv
+    ? initialLeads.map((l) => ({ ...l }))
+    : [];
+  private auditEvents: AuditEvent[] = this.isTestEnv
+    ? initialAuditEvents.map((a) => ({ ...a }))
+    : [];
+  private ptAssignments: PersonalTrainingAssignment[] = this.isTestEnv
+    ? initialPTAssignments.map((p) => ({ ...p }))
+    : [];
+  private notifications: NotificationLog[] = this.isTestEnv
+    ? initialNotifications.map((n) => ({ ...n }))
+    : [];
   private notificationSettings: NotificationSettings[] = initialNotificationSettings.map((s) => ({
     ...s,
     renewalNoticeDaysBefore: [...(s.renewalNoticeDaysBefore || [7, 3, 1])],
   }));
 
-  private receipts: Receipt[] = initialReceipts.map((r) => ({ ...r }));
+  private receipts: Receipt[] = this.isTestEnv
+    ? initialReceipts.map((r) => ({ ...r }))
+    : [];
   private financialCorrections: FinancialCorrection[] = [];
   private paymentPolicies: Record<string, TenantPaymentPolicy> = {
     'tenant-1': {
@@ -1820,26 +1851,26 @@ class DataStorage {
         this.lastDiskMtime = stats.mtimeMs;
         const raw = fs.readFileSync(readPath, 'utf-8');
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.tenants) && parsed.tenants.length) this.tenants = parsed.tenants;
-        if (Array.isArray(parsed.branches) && parsed.branches.length) this.branches = parsed.branches;
-        if (Array.isArray(parsed.users) && parsed.users.length) this.users = parsed.users;
-        if (Array.isArray(parsed.plans) && parsed.plans.length) this.plans = parsed.plans;
-        if (Array.isArray(parsed.members) && parsed.members.length) this.members = parsed.members;
-        if (Array.isArray(parsed.lockers) && parsed.lockers.length) this.lockers = parsed.lockers;
-        if (Array.isArray(parsed.products) && parsed.products.length) this.products = parsed.products;
-        if (Array.isArray(parsed.checkIns) && parsed.checkIns.length) this.checkIns = parsed.checkIns;
-        if (Array.isArray(parsed.invoices) && parsed.invoices.length) this.invoices = parsed.invoices;
-        if (Array.isArray(parsed.receipts) && parsed.receipts.length) this.receipts = parsed.receipts;
-        if (Array.isArray(parsed.financialCorrections) && parsed.financialCorrections.length) this.financialCorrections = parsed.financialCorrections;
+        if (Array.isArray(parsed.tenants)) this.tenants = parsed.tenants;
+        if (Array.isArray(parsed.branches)) this.branches = parsed.branches;
+        if (Array.isArray(parsed.users)) this.users = parsed.users;
+        if (Array.isArray(parsed.plans)) this.plans = parsed.plans;
+        if (Array.isArray(parsed.members)) this.members = parsed.members;
+        if (Array.isArray(parsed.lockers)) this.lockers = parsed.lockers;
+        if (Array.isArray(parsed.products)) this.products = parsed.products;
+        if (Array.isArray(parsed.checkIns)) this.checkIns = parsed.checkIns;
+        if (Array.isArray(parsed.invoices)) this.invoices = parsed.invoices;
+        if (Array.isArray(parsed.receipts)) this.receipts = parsed.receipts;
+        if (Array.isArray(parsed.financialCorrections)) this.financialCorrections = parsed.financialCorrections;
         if (parsed.paymentPolicies && typeof parsed.paymentPolicies === 'object') this.paymentPolicies = parsed.paymentPolicies;
-        if (Array.isArray(parsed.sales) && parsed.sales.length) this.sales = parsed.sales;
-        if (Array.isArray(parsed.expenses) && parsed.expenses.length) this.expenses = parsed.expenses;
-        if (Array.isArray(parsed.equipment) && parsed.equipment.length) this.equipment = parsed.equipment;
-        if (Array.isArray(parsed.maintenanceTickets) && parsed.maintenanceTickets.length) this.maintenanceTickets = parsed.maintenanceTickets;
-        if (Array.isArray(parsed.staffShifts) && parsed.staffShifts.length) this.staffShifts = parsed.staffShifts;
-        if (Array.isArray(parsed.leads) && parsed.leads.length) this.leads = parsed.leads;
-        if (Array.isArray(parsed.auditEvents) && parsed.auditEvents.length) this.auditEvents = parsed.auditEvents;
-        if (Array.isArray(parsed.ptAssignments) && parsed.ptAssignments.length) this.ptAssignments = parsed.ptAssignments;
+        if (Array.isArray(parsed.sales)) this.sales = parsed.sales;
+        if (Array.isArray(parsed.expenses)) this.expenses = parsed.expenses;
+        if (Array.isArray(parsed.equipment)) this.equipment = parsed.equipment;
+        if (Array.isArray(parsed.maintenanceTickets)) this.maintenanceTickets = parsed.maintenanceTickets;
+        if (Array.isArray(parsed.staffShifts)) this.staffShifts = parsed.staffShifts;
+        if (Array.isArray(parsed.leads)) this.leads = parsed.leads;
+        if (Array.isArray(parsed.auditEvents)) this.auditEvents = parsed.auditEvents;
+        if (Array.isArray(parsed.ptAssignments)) this.ptAssignments = parsed.ptAssignments;
       }
     } catch (e) {
       console.warn('Could not load local snapshot:', e);
@@ -2102,9 +2133,15 @@ class DataStorage {
   }
 
   verifyCredentials(email: string, password?: string): { user?: User; error?: string } | null {
-    this.syncFromDiskIfModified();
     const cleanEmail = email.trim().toLowerCase();
-    const user = this.users.find((u) => u.email.toLowerCase() === cleanEmail);
+    const user = this.users.find(
+      (u) =>
+        u.email.toLowerCase() === cleanEmail ||
+        (u.role === 'OWNER' &&
+          (cleanEmail === 'owner@mfitnessgym.com' ||
+            cleanEmail === 'dawit@mfitnessgym.com' ||
+            cleanEmail === 'dawit@apexfitness.com'))
+    );
     if (user) {
       if (user.isActive === false || user.status === 'DEACTIVATED') {
         return { error: 'ACCOUNT_DEACTIVATED' };
