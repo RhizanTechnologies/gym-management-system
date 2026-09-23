@@ -104,9 +104,13 @@ This application is built as a unified full-stack system. **Only one single depl
    ```env
    DATABASE_URL="postgresql://username:password@ep-xyz.neon.tech/neondb?sslmode=require"
    ```
-4. (Optional) Run the database migration script to seed PostgreSQL:
+4. (Optional) Run the clean owner-only database seed:
    ```bash
-   pnpm tsx scripts/migrate-json-to-postgres.ts
+   pnpm db:seed
+   ```
+   Or to clean existing test/demo records from Neon:
+   ```bash
+   pnpm db:clean
    ```
 5. Click **Deploy**. Vercel will build the app and deploy all API routes as serverless functions with automatic HTTPS.
 

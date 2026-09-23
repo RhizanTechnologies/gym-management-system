@@ -5,8 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number, symbol = '$', currency = 'USD'): string {
-  return `${symbol}${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+export function formatCurrency(amount: number, symbol = 'ETB', currency = 'ETB'): string {
+  const formatted = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (symbol === '$' || symbol === '€' || symbol === '£') {
+    return `${symbol}${formatted}`;
+  }
+  return `${symbol} ${formatted}`;
 }
 
 export function formatDate(dateString?: string): string {

@@ -2,344 +2,156 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seeding for GymOS...');
+  console.log('🌱 Starting clean owner-only database seeding for M Fitness and Gym...');
 
-  // 1. Tenants
-  const tenant1 = await prisma.tenant.upsert({
-    where: { slug: 'apex-fitness' },
-    update: {},
-    create: {
+  // 1. Clean existing mock/demo members, checkins, invoices, receipts, and old tenants if any
+  try {
+    console.log('🧹 Purging any old demo data...');
+    await prisma.checkInLog.deleteMany({});
+    await prisma.receipt.deleteMany({});
+    await prisma.invoice.deleteMany({});
+    await prisma.memberSubscription.deleteMany({});
+    await prisma.member.deleteMany({});
+    await prisma.locker.deleteMany({});
+    await prisma.pOSSale.deleteMany({});
+    await prisma.pOSProduct.deleteMany({});
+    await prisma.staffShift.deleteMany({});
+    await prisma.expense.deleteMany({});
+    await prisma.equipment.deleteMany({});
+    await prisma.lead.deleteMany({});
+    await prisma.auditEvent.deleteMany({});
+    await prisma.user.deleteMany({});
+    await prisma.membershipPlan.deleteMany({});
+    await prisma.tenant.deleteMany({});
+    console.log('✓ Old demo records purged cleanly.');
+  } catch (err) {
+    console.log('Note on purge (tables may be empty or unmigrated):', err.message);
+  }
+
+  // 2. Tenant: M Fitness and Gym (Figa, Addis Ababa)
+  const tenant = await prisma.tenant.create({
+    data: {
       id: 'tenant-1',
-      name: 'Apex Fitness Hub',
-      slug: 'apex-fitness',
+      name: 'M Fitness and Gym',
+      slug: 'm-fitness-gym',
       logo: '🏋️‍♂️',
-      address: 'Bole Medhanealem Road, Suite 400',
-      phone: '+251 91 122 3344',
-      email: 'contact@apexfitness.com',
-      currency: 'USD',
-      currencySymbol: '$',
+      address: 'Figa, Addis Ababa',
+      phone: '0961889867',
+      email: 'contact@mfitnessgym.com',
+      currency: 'ETB',
+      currencySymbol: 'ETB',
       maxCapacity: 80,
-      monthlySubscriptionFee: 99.0,
+      monthlySubscriptionFee: 1500.0,
       planTier: 'PRO',
       isActive: true,
     },
   });
+  console.log('✓ Seeded Facility:', tenant.name, `(${tenant.address}, Currency: ${tenant.currency})`);
 
-  const tenant2 = await prisma.tenant.upsert({
-    where: { slug: 'iron-forge' },
-    update: {},
-    create: {
-      id: 'tenant-2',
-      name: 'Iron Forge Gym & Spa',
-      slug: 'iron-forge',
-      logo: '⚡',
-      address: 'Downtown Commercial Center, 2nd Floor',
-      phone: '+251 92 334 4556',
-      email: 'info@ironforge.com',
-      currency: 'USD',
-      currencySymbol: '$',
-      maxCapacity: 120,
-      monthlySubscriptionFee: 149.0,
-      planTier: 'ENTERPRISE',
-      isActive: true,
+  // 3. User: Strictly the Gym Owner
+  const owner = await prisma.user.create({
+    data: {
+      id: 'user-owner-1',
+      tenantId: tenant.id,
+      name: 'Dawit Bekele (Owner)',
+      email: 'owner@mfitnessgym.com',
+      role: 'GYM_OWNER',
+      phone: '0961889867',
+      password: 'password123',
     },
   });
+  console.log('✓ Seeded Gym Owner:', owner.name, `(${owner.email}, Role: ${owner.role})`);
 
-  console.log('✓ Seeded Tenants:', tenant1.name, ',', tenant2.name);
-
-  // 2. Users
-  const users = [
-    {
-      id: 'user-super',
-      tenantId: 'tenant-1',
-      name: 'Platform Super Admin',
-      email: 'superadmin@gymos.io',
-      role: 'SUPER_ADMIN',
-    },
-    {
-      id: 'user-owner-1',
-      tenantId: 'tenant-1',
-      name: 'Dawit Bekele (Owner)',
-      email: 'dawit@apexfitness.com',
-      role: 'GYM_OWNER',
-      phone: '+251 91 122 3344',
-    },
-    {
-      id: 'user-staff-1',
-      tenantId: 'tenant-1',
-      name: 'Selam Tesfaye (Receptionist)',
-      email: 'selam@apexfitness.com',
-      role: 'RECEPTIONIST',
-      phone: '+251 91 223 4455',
-    },
-    {
-      id: 'user-trainer-1',
-      tenantId: 'tenant-1',
-      name: 'Coach Marcus',
-      email: 'marcus@apexfitness.com',
-      role: 'TRAINER',
-      phone: '+251 91 334 5566',
-    },
-    {
-      id: 'user-member-1',
-      tenantId: 'tenant-1',
-      name: 'Yonas Abraham',
-      email: 'yonas@gmail.com',
-      role: 'MEMBER',
-      phone: '+251 94 455 6677',
-    },
-  ];
-
-  for (const u of users) {
-    await prisma.user.upsert({
-      where: { id: u.id },
-      update: {},
-      create: {
-        id: u.id,
-        tenantId: u.tenantId,
-        name: u.name,
-        email: u.email,
-        role: u.role,
-        phone: u.phone || null,
-        password: 'password123',
-      },
-    });
-  }
-  console.log(`✓ Seeded ${users.length} Users`);
-
-  // 3. Membership Plans
+  // 4. Membership Plans (Official ETB Pricing)
   const plans = [
     {
-      id: 'plan-1-day',
-      tenantId: 'tenant-1',
+      id: 'plan-day-pass',
+      tenantId: tenant.id,
       name: 'Day Pass',
-      description: 'Single day access with locker and shower access',
+      description: 'Single day access with full facility and locker access',
       durationDays: 1,
-      price: 10,
+      price: 150,
       admissionFee: 0,
       maxVisitsPerDay: 1,
       includesClasses: false,
       color: '#6B7280',
     },
     {
-      id: 'plan-1-monthly',
-      tenantId: 'tenant-1',
+      id: 'plan-monthly',
+      tenantId: tenant.id,
       name: 'Monthly Standard',
-      description: 'Full gym access, cardio & strength zones',
+      description: 'Full monthly gym access, cardio & strength zones',
       durationDays: 30,
-      price: 45,
-      admissionFee: 15,
+      price: 1500,
+      admissionFee: 0,
       maxVisitsPerDay: 1,
       includesClasses: false,
-      color: '#3B82F6',
+      color: '#0F766E',
     },
     {
-      id: 'plan-1-quarterly',
-      tenantId: 'tenant-1',
+      id: 'plan-quarterly',
+      tenantId: tenant.id,
       name: '3-Month Pro Power',
-      description: 'Unlimited gym + group fitness classes + free locker',
+      description: 'Unlimited gym + group fitness training + dedicated locker',
       durationDays: 90,
-      price: 120,
+      price: 4000,
       admissionFee: 0,
       maxVisitsPerDay: 2,
       includesClasses: true,
-      color: '#10B981',
+      color: '#0284C7',
     },
     {
-      id: 'plan-1-annual',
-      tenantId: 'tenant-1',
+      id: 'plan-annual',
+      tenantId: tenant.id,
       name: 'Annual VIP All-Access',
-      description: 'Full gym, classes, sauna, personal trainer assessment & free towel',
+      description: '365 days full access, trainer consultation, shower & VIP locker',
       durationDays: 365,
-      price: 420,
+      price: 14000,
       admissionFee: 0,
       maxVisitsPerDay: 3,
       includesClasses: true,
-      color: '#8B5CF6',
-    },
-    {
-      id: 'plan-2-monthly',
-      tenantId: 'tenant-2',
-      name: 'Iron Standard',
-      description: 'Monthly unlimited lifting',
-      durationDays: 30,
-      price: 50,
-      admissionFee: 10,
-      maxVisitsPerDay: 1,
-      includesClasses: false,
-      color: '#F59E0B',
+      color: '#7C3AED',
     },
   ];
 
   for (const p of plans) {
-    await prisma.membershipPlan.upsert({
-      where: { id: p.id },
-      update: {},
-      create: p,
-    });
+    await prisma.membershipPlan.create({ data: p });
   }
-  console.log(`✓ Seeded ${plans.length} Membership Plans`);
+  console.log(`✓ Seeded ${plans.length} Clean ETB Membership Plans`);
 
-  // 4. Members
-  const members = [
-    {
-      id: 'mem-101',
-      tenantId: 'tenant-1',
-      memberNumber: 'AF-1001',
-      firstName: 'Yonas',
-      lastName: 'Abraham',
-      email: 'yonas@gmail.com',
-      phone: '+251 94 455 6677',
-      gender: 'MALE',
-      dateOfBirth: new Date('1995-04-12'),
-      emergencyContactName: 'Helen Abraham',
-      emergencyContactPhone: '+251 91 100 2233',
-      medicalNotes: 'None',
-      qrCodeToken: 'QR-AF-1001-YONAS',
-      profileImage: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      status: 'ACTIVE',
-      dueBalance: 0,
-      assignedLockerNumber: 'L-07',
-    },
-    {
-      id: 'mem-102',
-      tenantId: 'tenant-1',
-      memberNumber: 'AF-1002',
-      firstName: 'Sara',
-      lastName: 'Girma',
-      email: 'sara.girma@outlook.com',
-      phone: '+251 91 234 5678',
-      gender: 'FEMALE',
-      dateOfBirth: new Date('1998-09-20'),
-      emergencyContactName: 'Kidus Girma',
-      emergencyContactPhone: '+251 92 233 4455',
-      qrCodeToken: 'QR-AF-1002-SARA',
-      profileImage: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
-      status: 'EXPIRING_SOON',
-      dueBalance: 0,
-      assignedLockerNumber: 'L-12',
-    },
-    {
-      id: 'mem-103',
-      tenantId: 'tenant-1',
-      memberNumber: 'AF-1003',
-      firstName: 'Elias',
-      lastName: 'Tadesse',
-      email: 'elias.t@yahoo.com',
-      phone: '+251 93 345 6789',
-      gender: 'MALE',
-      qrCodeToken: 'QR-AF-1003-ELIAS',
-      profileImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-      status: 'EXPIRED',
-      dueBalance: 25,
-    },
-    {
-      id: 'mem-104',
-      tenantId: 'tenant-1',
-      memberNumber: 'AF-1004',
-      firstName: 'Bethlehem',
-      lastName: 'Haile',
-      email: 'betty.haile@gmail.com',
-      phone: '+251 94 567 8901',
-      gender: 'FEMALE',
-      qrCodeToken: 'QR-AF-1004-BETTY',
-      profileImage: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-      status: 'ACTIVE',
-      dueBalance: 0,
-      assignedLockerNumber: 'VIP-01',
-    },
-  ];
-
-  for (const m of members) {
-    await prisma.member.upsert({
-      where: { id: m.id },
-      update: {},
-      create: m,
-    });
-  }
-  console.log(`✓ Seeded ${members.length} Members`);
-
-  // 5. Lockers
+  // 5. Available Lockers (Clean, all ready for assignment)
   const lockers = [
-    { id: 'lock-1', tenantId: 'tenant-1', number: 'L-01', zone: 'Cardio Zone', status: 'AVAILABLE' },
-    { id: 'lock-2', tenantId: 'tenant-1', number: 'L-02', zone: 'Cardio Zone', status: 'AVAILABLE' },
-    { id: 'lock-3', tenantId: 'tenant-1', number: 'L-03', zone: 'Cardio Zone', status: 'MAINTENANCE' },
-    { id: 'lock-4', tenantId: 'tenant-1', number: 'L-04', zone: 'Free Weights', status: 'AVAILABLE' },
-    { id: 'lock-5', tenantId: 'tenant-1', number: 'L-05', zone: 'Free Weights', status: 'AVAILABLE' },
-    { id: 'lock-6', tenantId: 'tenant-1', number: 'L-06', zone: 'Free Weights', status: 'AVAILABLE' },
-    {
-      id: 'lock-7',
-      tenantId: 'tenant-1',
-      number: 'L-07',
-      zone: 'Free Weights',
-      status: 'OCCUPIED',
-      memberId: 'mem-101',
-      memberName: 'Yonas Abraham',
-      memberPhone: '+251 94 455 6677',
-      assignedAt: new Date(Date.now() - 30 * 86400000),
-      expiresAt: new Date(Date.now() + 60 * 86400000),
-    },
-    {
-      id: 'lock-8',
-      tenantId: 'tenant-1',
-      number: 'L-12',
-      zone: 'Locker Room A',
-      status: 'OCCUPIED',
-      memberId: 'mem-102',
-      memberName: 'Sara Girma',
-      memberPhone: '+251 91 234 5678',
-      assignedAt: new Date(Date.now() - 28 * 86400000),
-      expiresAt: new Date(Date.now() + 2 * 86400000),
-    },
-    {
-      id: 'lock-9',
-      tenantId: 'tenant-1',
-      number: 'VIP-01',
-      zone: 'VIP Lounge',
-      status: 'OCCUPIED',
-      memberId: 'mem-104',
-      memberName: 'Bethlehem Haile',
-      memberPhone: '+251 94 567 8901',
-      assignedAt: new Date(Date.now() - 10 * 86400000),
-      expiresAt: new Date(Date.now() + 355 * 86400000),
-    },
-    { id: 'lock-10', tenantId: 'tenant-1', number: 'VIP-02', zone: 'VIP Lounge', status: 'AVAILABLE' },
+    { id: 'lock-1', tenantId: tenant.id, number: 'L-01', zone: 'Cardio Zone', status: 'AVAILABLE' },
+    { id: 'lock-2', tenantId: tenant.id, number: 'L-02', zone: 'Cardio Zone', status: 'AVAILABLE' },
+    { id: 'lock-3', tenantId: tenant.id, number: 'L-03', zone: 'Cardio Zone', status: 'AVAILABLE' },
+    { id: 'lock-4', tenantId: tenant.id, number: 'L-04', zone: 'Free Weights', status: 'AVAILABLE' },
+    { id: 'lock-5', tenantId: tenant.id, number: 'L-05', zone: 'Free Weights', status: 'AVAILABLE' },
+    { id: 'lock-6', tenantId: tenant.id, number: 'L-06', zone: 'Free Weights', status: 'AVAILABLE' },
+    { id: 'lock-7', tenantId: tenant.id, number: 'L-07', zone: 'Main Floor', status: 'AVAILABLE' },
+    { id: 'lock-8', tenantId: tenant.id, number: 'L-08', zone: 'Main Floor', status: 'AVAILABLE' },
+    { id: 'lock-9', tenantId: tenant.id, number: 'L-09', zone: 'VIP Locker Room', status: 'AVAILABLE' },
+    { id: 'lock-10', tenantId: tenant.id, number: 'L-10', zone: 'VIP Locker Room', status: 'AVAILABLE' },
   ];
 
   for (const l of lockers) {
-    await prisma.locker.upsert({
-      where: {
-        tenantId_number: {
-          tenantId: l.tenantId,
-          number: l.number,
-        },
-      },
-      update: {},
-      create: l,
-    });
+    await prisma.locker.create({ data: l });
   }
-  console.log(`✓ Seeded ${lockers.length} Lockers`);
+  console.log(`✓ Seeded ${lockers.length} Available Lockers (0 Occupied)`);
 
-  // 6. POS Products
+  // 6. POS Products (Clean Starter Inventory in ETB)
   const products = [
-    { id: 'pos-1', tenantId: 'tenant-1', name: 'Mineral Spring Water 500ml', category: 'DRINK', price: 1.5, stock: 48, sku: 'DRK-WAT-01' },
-    { id: 'pos-2', tenantId: 'tenant-1', name: 'Optimum Nutrition Gold Whey (Vanilla)', category: 'SUPPLEMENT', price: 65.0, stock: 12, sku: 'SUP-WHE-01' },
-    { id: 'pos-3', tenantId: 'tenant-1', name: 'Creatine Monohydrate 300g', category: 'SUPPLEMENT', price: 28.0, stock: 15, sku: 'SUP-CRE-01' },
-    { id: 'pos-4', tenantId: 'tenant-1', name: 'Monster Energy Ultra (Sugar Free)', category: 'DRINK', price: 3.5, stock: 32, sku: 'DRK-ENG-01' },
-    { id: 'pos-5', tenantId: 'tenant-1', name: 'Microfiber Gym Towel (Apex Branded)', category: 'ACCESSORY', price: 12.0, stock: 25, sku: 'ACC-TWL-01' },
-    { id: 'pos-6', tenantId: 'tenant-1', name: '1-on-1 Personal Trainer Session (1 hr)', category: 'TRAINING', price: 25.0, stock: 999, sku: 'SRV-PT-01' },
+    { id: 'pos-1', tenantId: tenant.id, name: 'Mineral Spring Water 500ml', category: 'DRINK', price: 30, stock: 50, sku: 'DRK-WAT-01' },
+    { id: 'pos-2', tenantId: tenant.id, name: 'Energy Drink 250ml', category: 'DRINK', price: 120, stock: 30, sku: 'DRK-ENG-01' },
+    { id: 'pos-3', tenantId: tenant.id, name: 'Whey Protein Shake', category: 'SUPPLEMENT', price: 250, stock: 20, sku: 'SUP-WHE-01' },
+    { id: 'pos-4', tenantId: tenant.id, name: 'Gym Fitness Towel', category: 'ACCESSORY', price: 350, stock: 25, sku: 'ACC-TWL-01' },
   ];
 
-  for (const p of products) {
-    await prisma.pOSProduct.upsert({
-      where: { id: p.id },
-      update: {},
-      create: p,
-    });
+  for (const pr of products) {
+    await prisma.pOSProduct.create({ data: pr });
   }
-  console.log(`✓ Seeded ${products.length} POS Products`);
+  console.log(`✓ Seeded ${products.length} Clean Starter POS Products in ETB`);
 
-  console.log('🚀 Seeding completed successfully!');
+  console.log('✅ Clean owner-seeded site ready! Zero dummy members or fake invoices seeded.');
 }
 
 main()

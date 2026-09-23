@@ -52,24 +52,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const loadedUsers: User[] = data.users || [];
         setUsers(loadedUsers);
 
-        // Restore user from localStorage if authenticated
+        // Restore user from localStorage if authenticated, or default to Owner
         const savedUserId = typeof window !== 'undefined' ? localStorage.getItem('gymos_user_id') : null;
+        let activeUser: User | null = null;
         if (savedUserId) {
           const matched = loadedUsers.find((u) => u.id === savedUserId);
           if (matched && matched.isActive && matched.status !== 'DEACTIVATED') {
-            setCurrentUser(matched);
-            if (matched.tenantId) setCurrentTenantId(matched.tenantId);
-            syncSessionCookie(matched);
-          } else {
-            setCurrentUser(null);
-            if (typeof window !== 'undefined') {
-              localStorage.removeItem('gymos_user_id');
-              document.cookie =
-                'gymos_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; SameSite=Lax';
-            }
+            activeUser = matched;
+          }
+        }
+        if (!activeUser) {
+          // Default to Owner of M Fitness and Gym
+          activeUser = loadedUsers.find((u) => u.role === 'OWNER') || loadedUsers[0] || null;
+        }
+
+        if (activeUser) {
+          setCurrentUser(activeUser);
+          if (activeUser.tenantId) setCurrentTenantId(activeUser.tenantId);
+          syncSessionCookie(activeUser);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('gymos_user_id', activeUser.id);
           }
         } else {
-          // Unauthenticated state: do NOT auto-assign owner
           setCurrentUser(null);
         }
       }

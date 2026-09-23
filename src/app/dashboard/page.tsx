@@ -59,6 +59,8 @@ const PIE_COLORS = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4
 
 export default function DashboardPage() {
   const { currentTenant, currentUser } = useAuth();
+  const currencySymbol = currentTenant?.currencySymbol || currentTenant?.currency || 'ETB';
+  const formatMoney = (val: number) => formatCurrency(val, currencySymbol);
 
   // Filters State
   const [selectedPeriod, setSelectedPeriod] = useState<DateRangePeriod>('THIS_MONTH');
@@ -339,7 +341,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white mt-2">
-              {formatCurrency(dashboard?.revenue?.total || 0)}
+              {formatMoney(dashboard?.revenue?.total || 0)}
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
@@ -365,7 +367,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white mt-2">
-              {formatCurrency(dashboard?.expenses?.total || 0)}
+              {formatMoney(dashboard?.expenses?.total || 0)}
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
@@ -398,7 +400,7 @@ export default function DashboardPage() {
                     : 'text-rose-600 dark:text-rose-400'
                 }`}
               >
-                {formatCurrency(dashboard?.profitAndLoss?.netProfit || 0)}
+                {formatMoney(dashboard?.profitAndLoss?.netProfit || 0)}
               </span>
               <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400">
                 {dashboard?.profitAndLoss?.profitMarginPercent || 0}% margin
@@ -506,7 +508,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-2">
-              {formatCurrency(dashboard?.debts?.totalOutstanding || 0)}
+              {formatMoney(dashboard?.debts?.totalOutstanding || 0)}
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
@@ -591,7 +593,7 @@ export default function DashboardPage() {
               <p className="text-xs text-slate-500 dark:text-slate-400">By membership plan ({filterContextText})</p>
             </div>
             <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-2.5 py-1 rounded-lg">
-              {formatCurrency(dashboard?.revenue?.total || 0)}
+              {formatMoney(dashboard?.revenue?.total || 0)}
             </span>
           </div>
           <div className="h-64">
@@ -616,7 +618,7 @@ export default function DashboardPage() {
                       <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                  <Tooltip formatter={(value) => formatMoney(Number(value))} />
                 </PieChart>
               </ResponsiveContainer>
             )}

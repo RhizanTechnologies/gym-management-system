@@ -212,16 +212,18 @@ export function Sidebar() {
         </nav>
       </div>
 
-      {/* User / Role Footer */}
-      <div className="rounded-lg border border-[#E5E7EB] bg-[#F8FAFC] p-2.5 text-[12px] space-y-1">
-        <div className="flex items-center gap-1.5 text-[#0F766E] font-semibold">
-          <ShieldAlert className="h-3.5 w-3.5 text-[#0F766E]" aria-hidden="true" />
-          <span>Least-Privilege Active</span>
+      {/* User Status Footer */}
+      {currentUser && (
+        <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-2.5 flex items-center gap-2.5">
+          <div className="h-8 w-8 rounded-full bg-[#0F766E] flex items-center justify-center text-white text-xs font-bold uppercase shrink-0 shadow-xs">
+            {currentUser.name.charAt(0)}
+          </div>
+          <div className="overflow-hidden min-w-0">
+            <p className="font-semibold text-[13px] text-[#1F2937] truncate">{currentUser.name}</p>
+            <p className="text-[11px] text-[#0F766E] font-medium truncate">{currentUser.role.replace('_', ' ')}</p>
+          </div>
         </div>
-        <p className="text-[12px] text-[#1F2937]/80 truncate">
-          Active: <strong className="text-[#1F2937] font-semibold">{currentUser?.name}</strong>
-        </p>
-      </div>
+      )}
     </aside>
   );
 }

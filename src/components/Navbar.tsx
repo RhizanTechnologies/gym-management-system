@@ -24,12 +24,8 @@ import {
   ShieldCheck,
   Receipt,
   Wrench,
-  Compass,
 } from 'lucide-react';
-import { SalesPitchModal } from './SalesPitchModal';
 import { OperationalAlertsDropdown } from './OperationalAlertsDropdown';
-import { DemoBanner } from './DemoBanner';
-import { PilotJourneyModal } from './PilotJourneyModal';
 import { LanguageToggle } from './LanguageToggle';
 
 export function Navbar() {
@@ -43,8 +39,6 @@ export function Navbar() {
   const [showTenantMenu, setShowTenantMenu] = useState(false);
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showPitchModal, setShowPitchModal] = useState(false);
-  const [showJourneyModal, setShowJourneyModal] = useState(false);
 
   useEffect(() => {
     const fetchOccupancy = async () => {
@@ -105,9 +99,7 @@ export function Navbar() {
   ].filter((item) => item.roles.includes(role) || (role === 'OWNER' && item.roles.includes('GYM_OWNER')));
 
   return (
-    <>
-      <DemoBanner onOpenJourneyTour={() => setShowJourneyModal(true)} />
-      <header className="sticky top-0 z-40 w-full border-b border-[#E5E7EB] bg-white h-16 shadow-sm">
+    <header className="sticky top-0 z-40 w-full border-b border-[#E5E7EB] bg-white h-16 shadow-sm">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         {/* Left: Brand & Gym Selector */}
         <div className="flex items-center gap-3 sm:gap-4">
@@ -225,27 +217,6 @@ export function Navbar() {
             <span className="hidden md:inline">Member Pass</span>
           </Link>
 
-          <button
-            type="button"
-            onClick={() => setShowJourneyModal(true)}
-            aria-label="Interactive pilot journey walkthrough"
-            className="flex items-center gap-1.5 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-800 px-2.5 py-1.5 text-[12px] font-bold hover:bg-emerald-100 transition-colors focus-visible:outline-2 focus-visible:outline-[#0F766E]"
-            title="Launch Prompt 7 Pilot Journey Tour"
-          >
-            <Compass className="h-3.5 w-3.5 text-emerald-700" />
-            <span className="hidden sm:inline">Pilot Tour</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowPitchModal(true)}
-            aria-label="Demo pitch and reset tools"
-            className="flex items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-[12px] font-semibold text-[#1F2937] hover:bg-[#F8FAFC] transition-colors focus-visible:outline-2 focus-visible:outline-[#0F766E]"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-[#0F766E]" />
-            <span className="hidden md:inline">Demo & Pitch</span>
-          </button>
-
           {/* User & Role Switcher */}
           {currentUser ? (
             <div className="relative">
@@ -358,25 +329,6 @@ export function Navbar() {
           })}
         </div>
       )}
-
-      {/* Sales Pitch & Demo Reset Modal */}
-      {showPitchModal && (
-        <SalesPitchModal
-          onClose={() => setShowPitchModal(false)}
-          onResetData={async () => {
-            await fetch('/api/admin/reset', { method: 'POST' });
-            await refreshData();
-            window.location.reload();
-          }}
-        />
-      )}
-
-      {/* Pilot Journey Walkthrough Modal */}
-      <PilotJourneyModal
-        isOpen={showJourneyModal}
-        onClose={() => setShowJourneyModal(false)}
-      />
     </header>
-  </>
   );
 }

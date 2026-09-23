@@ -56,20 +56,20 @@ export { prisma };
 const initialTenants: Tenant[] = [
   {
     id: 'tenant-1',
-    name: 'M Fitness and Gym [PILOT DEMO]',
+    name: 'M Fitness and Gym',
     slug: 'm-fitness-gym',
     logo: '🏋️‍♂️',
     address: 'Figa, Addis Ababa',
     phone: '0961889867',
     email: 'contact@mfitnessgym.com',
-    currency: 'USD',
-    currencySymbol: '$',
+    currency: 'ETB',
+    currencySymbol: 'ETB',
     maxCapacity: 80,
-    monthlySubscriptionFee: 99,
+    monthlySubscriptionFee: 1500,
     planTier: 'PRO',
     isActive: true,
-    isDemo: true,
-    demoSubtitle: 'M Fitness and Gym • Figa, Addis Ababa • 0961889867 • Synthetic Data Only',
+    isDemo: false,
+    demoSubtitle: '',
     createdAt: new Date(Date.now() - 90 * 86400000).toISOString(),
   },
   {
@@ -1527,26 +1527,27 @@ class DataStorage {
           createdAt: t.createdAt.toISOString(),
           updatedAt: t.updatedAt ? t.updatedAt.toISOString() : undefined,
         }));
-      }
-      if (dbUsers && dbUsers.length) {
-        this.users = dbUsers.map((u) => ({
-          ...u,
-          role: u.role as any,
-          phone: u.phone || undefined,
-          avatarUrl: u.avatarUrl || undefined,
-          isActive: true,
-          status: 'ACTIVE' as const,
-          createdAt: u.createdAt.toISOString(),
-        }));
-      }
-      if (dbPlans && dbPlans.length) {
-        this.plans = dbPlans.map((p) => ({
-          ...p,
-          admissionFee: p.admissionFee ?? 0,
-        }));
-      }
-      if (dbMembers && dbMembers.length) {
-        this.members = dbMembers.map((m) => ({
+
+        if (dbUsers) {
+          this.users = dbUsers.map((u) => ({
+            ...u,
+            role: u.role as any,
+            phone: u.phone || undefined,
+            avatarUrl: u.avatarUrl || undefined,
+            isActive: true,
+            status: 'ACTIVE' as const,
+            createdAt: u.createdAt.toISOString(),
+          }));
+        }
+
+        if (dbPlans) {
+          this.plans = dbPlans.map((p) => ({
+            ...p,
+            admissionFee: p.admissionFee ?? 0,
+          }));
+        }
+
+        this.members = (dbMembers || []).map((m) => ({
           ...m,
           gender: (m.gender as any) || undefined,
           email: m.email || undefined,
@@ -1569,9 +1570,8 @@ class DataStorage {
           assignedLockerNumber: m.assignedLockerNumber || undefined,
           status: m.status as any,
         }));
-      }
-      if (dbInvoices && dbInvoices.length) {
-        this.invoices = dbInvoices.map((inv) => ({
+
+        this.invoices = (dbInvoices || []).map((inv) => ({
           ...inv,
           type: inv.type as any,
           status: inv.status as any,
@@ -1590,9 +1590,8 @@ class DataStorage {
           createdAt: inv.createdAt.toISOString(),
           dueDate: inv.dueDate?.toISOString(),
         }));
-      }
-      if (dbReceipts && dbReceipts.length) {
-        this.receipts = dbReceipts.map((r) => ({
+
+        this.receipts = (dbReceipts || []).map((r) => ({
           ...r,
           memberId: r.memberId || undefined,
           paymentMethod: r.paymentMethod as any,
@@ -1602,9 +1601,8 @@ class DataStorage {
           notes: r.notes || undefined,
           createdAt: r.createdAt.toISOString(),
         }));
-      }
-      if (dbLockers && dbLockers.length) {
-        this.lockers = dbLockers.map((l) => ({
+
+        this.lockers = (dbLockers || []).map((l) => ({
           ...l,
           zone: (l.zone as any) || 'Main',
           status: l.status as any,
@@ -1614,6 +1612,15 @@ class DataStorage {
           assignedAt: l.assignedAt?.toISOString(),
           expiresAt: l.expiresAt?.toISOString(),
         }));
+
+        // Reset demo collections when live database is connected
+        this.checkIns = [];
+        this.expenses = [];
+        this.sales = [];
+        this.staffShifts = [];
+        this.leads = [];
+        this.ptAssignments = [];
+        this.maintenanceTickets = [];
       }
     } catch (e) {
       console.warn('Could not load from PostgreSQL:', e);

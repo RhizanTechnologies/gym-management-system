@@ -2,21 +2,21 @@
   "tenants": [
     {
       "id": "tenant-1",
-      "name": "M Fitness and Gym [PILOT DEMO]",
+      "name": "M Fitness and Gym",
       "slug": "m-fitness-gym",
       "logo": "🏋️‍♂️",
       "address": "Figa, Addis Ababa",
       "phone": "0961889867",
       "email": "contact@mfitnessgym.com",
-      "currency": "USD",
-      "currencySymbol": "$",
+      "currency": "ETB",
+      "currencySymbol": "ETB",
       "maxCapacity": 80,
-      "monthlySubscriptionFee": 99,
+      "monthlySubscriptionFee": 1500,
       "planTier": "PRO",
       "isActive": true,
-      "isDemo": true,
-      "demoSubtitle": "M Fitness and Gym • Figa, Addis Ababa • 0961889867 • Synthetic Data Only",
-      "createdAt": "2026-06-25T09:21:24.363Z"
+      "isDemo": false,
+      "demoSubtitle": "",
+      "createdAt": "2026-06-25T18:56:54.789Z"
     },
     {
       "id": "tenant-2",
@@ -32,22 +32,7 @@
       "monthlySubscriptionFee": 149,
       "planTier": "ENTERPRISE",
       "isActive": true,
-      "createdAt": "2026-07-25T09:21:24.364Z"
-    },
-    {
-      "name": "Olympus Gym",
-      "slug": "olympus-gym",
-      "address": "Athens Blvd 44",
-      "phone": "+1 555 0199",
-      "email": "admin@olympus.com",
-      "currency": "EUR",
-      "currencySymbol": "€",
-      "maxCapacity": 150,
-      "monthlySubscriptionFee": 120,
-      "planTier": "PRO",
-      "isActive": true,
-      "id": "tenant-1790155285009",
-      "createdAt": "2026-09-23T09:21:25.009Z"
+      "createdAt": "2026-07-25T18:56:54.790Z"
     }
   ],
   "branches": [
@@ -60,7 +45,7 @@
       "phone": "0961889867",
       "isMain": true,
       "isActive": true,
-      "createdAt": "2026-06-25T09:21:24.364Z"
+      "createdAt": "2026-06-25T18:56:54.790Z"
     },
     {
       "id": "branch-1-sarbet",
@@ -71,7 +56,7 @@
       "phone": "+251 91 199 8877",
       "isMain": false,
       "isActive": true,
-      "createdAt": "2026-08-09T09:21:24.364Z"
+      "createdAt": "2026-08-09T18:56:54.790Z"
     },
     {
       "id": "branch-2-main",
@@ -82,7 +67,7 @@
       "phone": "+251 92 334 4556",
       "isMain": true,
       "isActive": true,
-      "createdAt": "2026-07-25T09:21:24.364Z"
+      "createdAt": "2026-07-25T18:56:54.790Z"
     }
   ],
   "users": [
@@ -94,7 +79,7 @@
       "role": "SUPER_ADMIN",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-owner-1",
@@ -105,7 +90,7 @@
       "phone": "+251 91 122 3344",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-gm-1",
@@ -116,7 +101,7 @@
       "phone": "+251 91 778 9900",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-staff-1",
@@ -127,7 +112,7 @@
       "phone": "+251 91 223 4455",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-trainer-1",
@@ -138,7 +123,7 @@
       "phone": "+251 91 334 5566",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-maint-1",
@@ -149,7 +134,7 @@
       "phone": "+251 91 556 7788",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-finance-1",
@@ -160,7 +145,7 @@
       "phone": "+251 91 445 6688",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-mgr-1",
@@ -171,7 +156,7 @@
       "phone": "+251 91 667 8899",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-member-1",
@@ -182,7 +167,7 @@
       "phone": "+251 94 455 6677",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-owner-2",
@@ -193,7 +178,7 @@
       "phone": "+251 92 334 4556",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     },
     {
       "id": "user-reception-2",
@@ -204,7 +189,7 @@
       "phone": "+251 92 889 9001",
       "isActive": true,
       "status": "ACTIVE",
-      "createdAt": "2026-09-23T09:21:24.364Z"
+      "createdAt": "2026-09-23T18:56:54.790Z"
     }
   ],
   "plans": [
@@ -394,19 +379,6 @@
         "Lockers"
       ],
       "isPopular": true
-    },
-    {
-      "id": "plan-tenant-1790155285009-monthly",
-      "tenantId": "tenant-1790155285009",
-      "name": "Standard Monthly",
-      "description": "Full gym floor access",
-      "durationDays": 30,
-      "price": 50,
-      "admissionFee": 10,
-      "maxVisitsPerDay": 1,
-      "includesClasses": false,
-      "color": "#3B82F6",
-      "isActive": true
     }
   ],
   "members": [
@@ -421,21 +393,21 @@
       "phone": "+251 94 455 6677",
       "gender": "MALE",
       "dateOfBirth": "1995-04-12",
-      "joinDate": "2026-08-09T09:21:24.364Z",
+      "joinDate": "2026-08-09T18:56:54.790Z",
       "emergencyContactName": "Helen Abraham",
       "emergencyContactRelationship": "Spouse",
       "emergencyContactPhone": "+251 91 100 2233",
       "medicalNotes": "None",
       "consentGiven": true,
-      "consentDate": "2026-08-09T09:21:24.364Z",
+      "consentDate": "2026-08-09T18:56:54.790Z",
       "consentPolicyVersion": "v1.0",
       "qrCodeToken": "QR-AF-1001-YONAS",
       "profileImage": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
       "status": "ACTIVE",
       "currentPlanId": "plan-1-quarterly",
       "currentPlanName": "3-Month Pro Power",
-      "subscriptionStart": "2026-08-24T09:21:24.364Z",
-      "subscriptionEnd": "2026-11-22T09:21:24.364Z",
+      "subscriptionStart": "2026-08-24T18:56:54.790Z",
+      "subscriptionEnd": "2026-11-22T18:56:54.790Z",
       "daysRemaining": 60,
       "dueBalance": 0,
       "assignedLockerNumber": "L-07",
@@ -455,21 +427,21 @@
       "phone": "+251 91 234 5678",
       "gender": "FEMALE",
       "dateOfBirth": "1998-09-20",
-      "joinDate": "2026-08-26T09:21:24.364Z",
+      "joinDate": "2026-08-26T18:56:54.790Z",
       "emergencyContactName": "Kidus Girma",
       "emergencyContactRelationship": "Brother",
       "emergencyContactPhone": "+251 92 233 4455",
       "medicalNotes": "Mild asthma, carries inhaler",
       "consentGiven": true,
-      "consentDate": "2026-08-26T09:21:24.364Z",
+      "consentDate": "2026-08-26T18:56:54.790Z",
       "consentPolicyVersion": "v1.0",
       "qrCodeToken": "QR-AF-1002-SARA",
       "profileImage": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
       "status": "EXPIRING_SOON",
       "currentPlanId": "plan-1-monthly",
       "currentPlanName": "Monthly Standard",
-      "subscriptionStart": "2026-08-26T09:21:24.364Z",
-      "subscriptionEnd": "2026-09-25T09:21:24.364Z",
+      "subscriptionStart": "2026-08-26T18:56:54.790Z",
+      "subscriptionEnd": "2026-09-25T18:56:54.790Z",
       "daysRemaining": 2,
       "dueBalance": 0,
       "assignedLockerNumber": "L-12",
@@ -488,21 +460,21 @@
       "email": "elias.t@yahoo.com",
       "phone": "+251 93 345 6789",
       "gender": "MALE",
-      "joinDate": "2026-07-20T09:21:24.364Z",
+      "joinDate": "2026-07-20T18:56:54.790Z",
       "emergencyContactName": "Abebech Tadesse",
       "emergencyContactRelationship": "Mother",
       "emergencyContactPhone": "+251 91 333 7788",
       "medicalNotes": "Lower back disc herniation - avoid heavy deadlifts",
       "consentGiven": true,
-      "consentDate": "2026-07-20T09:21:24.364Z",
+      "consentDate": "2026-07-20T18:56:54.790Z",
       "consentPolicyVersion": "v1.0",
       "qrCodeToken": "QR-AF-1003-ELIAS",
       "profileImage": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
       "status": "EXPIRED",
       "currentPlanId": "plan-1-monthly",
       "currentPlanName": "Monthly Standard",
-      "subscriptionStart": "2026-07-20T09:21:24.364Z",
-      "subscriptionEnd": "2026-09-18T09:21:24.364Z",
+      "subscriptionStart": "2026-07-20T18:56:54.790Z",
+      "subscriptionEnd": "2026-09-18T18:56:54.790Z",
       "daysRemaining": -5,
       "dueBalance": 25,
       "notificationOptIn": false,
@@ -520,21 +492,21 @@
       "email": "betty.haile@gmail.com",
       "phone": "+251 94 567 8901",
       "gender": "FEMALE",
-      "joinDate": "2026-09-13T09:21:24.365Z",
+      "joinDate": "2026-09-13T18:56:54.790Z",
       "emergencyContactName": "Dr. Haile Wolde",
       "emergencyContactRelationship": "Father",
       "emergencyContactPhone": "+251 91 444 8899",
       "medicalNotes": "None reported",
       "consentGiven": true,
-      "consentDate": "2026-09-13T09:21:24.365Z",
+      "consentDate": "2026-09-13T18:56:54.790Z",
       "consentPolicyVersion": "v1.0",
       "qrCodeToken": "QR-AF-1004-BETTY",
       "profileImage": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
       "status": "ACTIVE",
       "currentPlanId": "plan-1-annual",
       "currentPlanName": "Annual VIP All-Access",
-      "subscriptionStart": "2026-09-13T09:21:24.365Z",
-      "subscriptionEnd": "2027-09-13T09:21:24.365Z",
+      "subscriptionStart": "2026-09-13T18:56:54.790Z",
+      "subscriptionEnd": "2027-09-13T18:56:54.790Z",
       "daysRemaining": 355,
       "dueBalance": 0,
       "assignedLockerNumber": "VIP-01",
@@ -552,16 +524,16 @@
       "lastName": "Alemu",
       "phone": "+251 92 789 0123",
       "gender": "MALE",
-      "joinDate": "2026-09-03T09:21:24.365Z",
+      "joinDate": "2026-09-03T18:56:54.790Z",
       "consentGiven": true,
-      "consentDate": "2026-09-03T09:21:24.365Z",
+      "consentDate": "2026-09-03T18:56:54.790Z",
       "consentPolicyVersion": "v1.0",
       "qrCodeToken": "QR-AF-1005-MICHAEL",
       "status": "ACTIVE",
       "currentPlanId": "plan-1-monthly",
       "currentPlanName": "Monthly Standard",
-      "subscriptionStart": "2026-09-03T09:21:24.365Z",
-      "subscriptionEnd": "2026-10-03T09:21:24.365Z",
+      "subscriptionStart": "2026-09-03T18:56:54.790Z",
+      "subscriptionEnd": "2026-10-03T18:56:54.790Z",
       "daysRemaining": 10,
       "dueBalance": 0,
       "notificationOptIn": true,
@@ -578,16 +550,16 @@
       "lastName": "Kebede",
       "phone": "+251 91 765 4321",
       "gender": "MALE",
-      "joinDate": "2026-07-25T09:21:24.365Z",
+      "joinDate": "2026-07-25T18:56:54.790Z",
       "consentGiven": true,
-      "consentDate": "2026-07-25T09:21:24.365Z",
+      "consentDate": "2026-07-25T18:56:54.790Z",
       "consentPolicyVersion": "v1.0",
       "qrCodeToken": "QR-AF-1006-DAWIT",
       "status": "SUSPENDED",
       "currentPlanId": "plan-1-monthly",
       "currentPlanName": "Monthly Standard",
-      "subscriptionStart": "2026-07-25T09:21:24.365Z",
-      "subscriptionEnd": "2026-10-23T09:21:24.365Z",
+      "subscriptionStart": "2026-07-25T18:56:54.790Z",
+      "subscriptionEnd": "2026-10-23T18:56:54.790Z",
       "daysRemaining": 30,
       "dueBalance": 0,
       "notificationOptIn": true,
@@ -604,16 +576,16 @@
       "lastName": "Belay",
       "phone": "+251 92 876 5432",
       "gender": "FEMALE",
-      "joinDate": "2026-08-14T09:21:24.365Z",
+      "joinDate": "2026-08-14T18:56:54.790Z",
       "consentGiven": true,
-      "consentDate": "2026-08-14T09:21:24.365Z",
+      "consentDate": "2026-08-14T18:56:54.790Z",
       "consentPolicyVersion": "v1.0",
       "qrCodeToken": "QR-AF-1007-TIGIST",
       "status": "FROZEN",
       "currentPlanId": "plan-1-quarterly",
       "currentPlanName": "3-Month Pro Power",
-      "subscriptionStart": "2026-08-14T09:21:24.365Z",
-      "subscriptionEnd": "2026-11-12T09:21:24.365Z",
+      "subscriptionStart": "2026-08-14T18:56:54.790Z",
+      "subscriptionEnd": "2026-11-12T18:56:54.790Z",
       "daysRemaining": 50,
       "dueBalance": 0,
       "notificationOptIn": false,
@@ -632,21 +604,21 @@
       "phone": "0911223344",
       "gender": "MALE",
       "dateOfBirth": "1996-03-15",
-      "joinDate": "2026-09-18T09:21:24.365Z",
+      "joinDate": "2026-09-18T18:56:54.790Z",
       "emergencyContactName": "Solomon Tesfaye",
       "emergencyContactRelationship": "Brother",
       "emergencyContactPhone": "0922334455",
       "medicalNotes": "None",
       "consentGiven": true,
-      "consentDate": "2026-09-18T09:21:24.365Z",
+      "consentDate": "2026-09-18T18:56:54.790Z",
       "consentPolicyVersion": "v1.0",
       "qrCodeToken": "QR-AF-1008-ABEL",
       "profileImage": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
       "status": "ACTIVE",
       "currentPlanId": "plan-1-monthly",
       "currentPlanName": "Monthly Standard",
-      "subscriptionStart": "2026-09-18T09:21:24.365Z",
-      "subscriptionEnd": "2026-10-18T09:21:24.365Z",
+      "subscriptionStart": "2026-09-18T18:56:54.790Z",
+      "subscriptionEnd": "2026-10-18T18:56:54.790Z",
       "daysRemaining": 25,
       "dueBalance": 0,
       "assignedLockerNumber": "L-01",
@@ -656,7 +628,7 @@
       "emailOptOut": false
     },
     {
-      "id": "mem-1790155284484-0",
+      "id": "mem-1790189814807-0",
       "tenantId": "tenant-1",
       "memberNumber": "M -1009",
       "firstName": "Kenenisa",
@@ -664,7 +636,7 @@
       "phone": "+251933000333",
       "email": "kenenisa@run.com",
       "joinDate": "2026-08-01T00:00:00.000Z",
-      "qrCodeToken": "QR-M -1009-ZYSN2RPSKICRBJ3I",
+      "qrCodeToken": "QR-M -1009-RP10VOJETB3CKTE0",
       "status": "EXPIRED",
       "currentPlanId": "plan-1-monthly",
       "currentPlanName": "Monthly Standard",
@@ -710,10 +682,10 @@
       "number": "L-05",
       "zone": "Free Weights",
       "status": "OCCUPIED",
-      "memberId": "mem-1790155284484-0",
+      "memberId": "mem-1790189814807-0",
       "memberName": "Kenenisa Bekele",
       "memberPhone": "+251933000333",
-      "assignedAt": "2026-09-23T09:21:24.485Z",
+      "assignedAt": "2026-09-23T18:56:54.807Z",
       "expiresAt": "2026-08-31T00:00:00.000Z"
     },
     {
@@ -732,8 +704,8 @@
       "memberId": "mem-101",
       "memberName": "Yonas Abraham",
       "memberPhone": "+251 94 455 6677",
-      "assignedAt": "2026-08-24T09:21:24.365Z",
-      "expiresAt": "2026-11-22T09:21:24.365Z"
+      "assignedAt": "2026-08-24T18:56:54.790Z",
+      "expiresAt": "2026-11-22T18:56:54.790Z"
     },
     {
       "id": "lock-8",
@@ -744,8 +716,8 @@
       "memberId": "mem-102",
       "memberName": "Sara Girma",
       "memberPhone": "+251 91 234 5678",
-      "assignedAt": "2026-08-26T09:21:24.365Z",
-      "expiresAt": "2026-09-25T09:21:24.365Z"
+      "assignedAt": "2026-08-26T18:56:54.790Z",
+      "expiresAt": "2026-09-25T18:56:54.790Z"
     },
     {
       "id": "lock-9",
@@ -756,8 +728,8 @@
       "memberId": "mem-104",
       "memberName": "Bethlehem Haile",
       "memberPhone": "+251 94 567 8901",
-      "assignedAt": "2026-09-13T09:21:24.365Z",
-      "expiresAt": "2027-09-13T09:21:24.365Z"
+      "assignedAt": "2026-09-13T18:56:54.790Z",
+      "expiresAt": "2027-09-13T18:56:54.790Z"
     },
     {
       "id": "lock-10",
@@ -834,17 +806,6 @@
   ],
   "checkIns": [
     {
-      "id": "chk-1790155284448-450",
-      "tenantId": "tenant-1",
-      "memberId": "mem-103",
-      "memberName": "Elias Tadesse",
-      "memberNumber": "AF-1003",
-      "timestamp": "2026-09-23T09:21:24.448Z",
-      "status": "DENIED_EXPIRED",
-      "failureReason": "Membership expired 5 day(s) ago. Renewal required for entry.",
-      "method": "QR_SCAN"
-    },
-    {
       "id": "chk-1",
       "tenantId": "tenant-1",
       "branchId": "branch-1-main",
@@ -852,7 +813,7 @@
       "memberId": "mem-101",
       "memberName": "Yonas Abraham",
       "memberNumber": "AF-1001",
-      "timestamp": "2026-09-23T08:46:24.365Z",
+      "timestamp": "2026-09-23T18:21:54.790Z",
       "status": "GRANTED",
       "method": "QR_SCAN",
       "lockerAssigned": "L-07"
@@ -865,7 +826,7 @@
       "memberId": "mem-104",
       "memberName": "Bethlehem Haile",
       "memberNumber": "AF-1004",
-      "timestamp": "2026-09-23T09:06:24.365Z",
+      "timestamp": "2026-09-23T18:41:54.790Z",
       "status": "GRANTED",
       "method": "QR_SCAN",
       "lockerAssigned": "VIP-01"
@@ -878,7 +839,7 @@
       "memberId": "mem-105",
       "memberName": "Michael Alemu",
       "memberNumber": "AF-1005",
-      "timestamp": "2026-09-23T09:16:24.365Z",
+      "timestamp": "2026-09-23T18:51:54.790Z",
       "status": "GRANTED",
       "method": "MANUAL_OVERRIDE"
     }
@@ -913,7 +874,7 @@
       "receiptNumber": "RCP-2026-1001",
       "recordedBy": "Selam Tesfaye",
       "recordedById": "user-staff-1",
-      "createdAt": "2026-08-24T09:21:24.365Z"
+      "createdAt": "2026-08-24T18:56:54.790Z"
     },
     {
       "id": "inv-002",
@@ -944,7 +905,7 @@
       "receiptNumber": "RCP-2026-1002",
       "recordedBy": "Selam Tesfaye",
       "recordedById": "user-staff-1",
-      "createdAt": "2026-09-13T09:21:24.365Z"
+      "createdAt": "2026-09-13T18:56:54.790Z"
     },
     {
       "id": "inv-003",
@@ -975,7 +936,7 @@
       "receiptNumber": "RCP-2026-1003",
       "recordedBy": "Selam Tesfaye",
       "recordedById": "user-staff-1",
-      "createdAt": "2026-07-20T09:21:24.365Z"
+      "createdAt": "2026-07-20T18:56:54.790Z"
     }
   ],
   "receipts": [
@@ -1002,7 +963,7 @@
           "category": "PLAN"
         }
       ],
-      "createdAt": "2026-08-24T09:21:24.365Z"
+      "createdAt": "2026-08-24T18:56:54.790Z"
     },
     {
       "id": "rcp-002",
@@ -1027,7 +988,7 @@
           "category": "PLAN"
         }
       ],
-      "createdAt": "2026-09-13T09:21:24.365Z"
+      "createdAt": "2026-09-13T18:56:54.790Z"
     },
     {
       "id": "rcp-003",
@@ -1052,7 +1013,7 @@
           "category": "PLAN"
         }
       ],
-      "createdAt": "2026-07-20T09:21:24.365Z"
+      "createdAt": "2026-07-20T18:56:54.790Z"
     }
   ],
   "financialCorrections": [],
@@ -1079,11 +1040,11 @@
       "amount": 420,
       "paymentMethod": "BANK_TRANSFER",
       "vendor": "Addis Power Utility Corp",
-      "date": "2026-09-18T09:21:24.365Z",
+      "date": "2026-09-18T18:56:54.790Z",
       "loggedBy": "Dawit Bekele",
       "receiptNumber": "EL-2026-8819",
       "notes": "Main gym floor air conditioning & lighting",
-      "createdAt": "2026-09-18T09:21:24.365Z"
+      "createdAt": "2026-09-18T18:56:54.790Z"
     },
     {
       "id": "exp-102",
@@ -1094,11 +1055,11 @@
       "amount": 180,
       "paymentMethod": "BANK_TRANSFER",
       "vendor": "Municipal Water Services",
-      "date": "2026-09-15T09:21:24.365Z",
+      "date": "2026-09-15T18:56:54.790Z",
       "loggedBy": "Dawit Bekele",
       "receiptNumber": "WT-2026-4412",
       "notes": "Locker room showers and steam room",
-      "createdAt": "2026-09-15T09:21:24.365Z"
+      "createdAt": "2026-09-15T18:56:54.790Z"
     },
     {
       "id": "exp-103",
@@ -1109,11 +1070,11 @@
       "amount": 150,
       "paymentMethod": "CASH",
       "vendor": "FitTech Equipment Repairs",
-      "date": "2026-09-11T09:21:24.365Z",
+      "date": "2026-09-11T18:56:54.790Z",
       "loggedBy": "Kassahun Mengistu",
       "receiptNumber": "FT-9941",
       "notes": "Drive belt replacement and roller calibration",
-      "createdAt": "2026-09-11T09:21:24.365Z"
+      "createdAt": "2026-09-11T18:56:54.790Z"
     },
     {
       "id": "exp-104",
@@ -1124,13 +1085,13 @@
       "amount": 1200,
       "paymentMethod": "BANK_TRANSFER",
       "vendor": "Apex Staff Payroll",
-      "date": "2026-09-09T09:21:24.365Z",
+      "date": "2026-09-09T18:56:54.790Z",
       "loggedBy": "Dawit Bekele",
       "receiptNumber": "PAY-2026-09A",
       "notes": "Bi-weekly front desk staff and cleaning team payroll",
       "status": "APPROVED",
       "approvedBy": "Dawit Bekele",
-      "createdAt": "2026-09-09T09:21:24.365Z"
+      "createdAt": "2026-09-09T18:56:54.790Z"
     },
     {
       "id": "exp-105",
@@ -1141,13 +1102,13 @@
       "amount": 285,
       "paymentMethod": "CARD",
       "vendor": "Optimum Nutrition Wholesale",
-      "date": "2026-09-20T09:21:24.365Z",
+      "date": "2026-09-20T18:56:54.790Z",
       "loggedBy": "Selam Tesfaye",
       "receiptNumber": "INV-77312",
       "notes": "48 bottles Isolate Whey Protein, 60 electrolyte drinks",
       "status": "APPROVED",
       "approvedBy": "Dawit Bekele",
-      "createdAt": "2026-09-20T09:21:24.365Z"
+      "createdAt": "2026-09-20T18:56:54.790Z"
     },
     {
       "id": "exp-106",
@@ -1158,13 +1119,13 @@
       "amount": 95,
       "paymentMethod": "CASH",
       "vendor": "CleanPro Facility Supplies",
-      "date": "2026-09-21T09:21:24.365Z",
+      "date": "2026-09-21T18:56:54.790Z",
       "loggedBy": "Selam Tesfaye",
       "receiptNumber": "CP-1102",
       "notes": "Disinfectant sprays, microfiber gym towels, sanitizers",
       "status": "APPROVED",
       "approvedBy": "Dawit Bekele",
-      "createdAt": "2026-09-21T09:21:24.365Z"
+      "createdAt": "2026-09-21T18:56:54.790Z"
     },
     {
       "id": "exp-107",
@@ -1175,13 +1136,13 @@
       "amount": 1450,
       "paymentMethod": "BANK_TRANSFER",
       "vendor": "Finnish Sauna Tech Ltd",
-      "date": "2026-09-22T09:21:24.365Z",
+      "date": "2026-09-22T18:56:54.790Z",
       "loggedBy": "Robel Haile (Floor Manager)",
       "receiptNumber": "REQ-2026-9901",
       "notes": "Requires Owner or Finance Officer approval ($1,450 exceeds $1,000 manager limit).",
       "evidenceUrl": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&auto=format&fit=crop&q=80",
       "status": "PENDING_APPROVAL",
-      "createdAt": "2026-09-22T09:21:24.365Z"
+      "createdAt": "2026-09-22T18:56:54.790Z"
     }
   ],
   "equipment": [
@@ -1197,9 +1158,9 @@
       "status": "OPERATIONAL",
       "condition": "EXCELLENT",
       "location": "Cardio Deck - Station 1",
-      "lastServicedAt": "2026-08-24T09:21:24.365Z",
+      "lastServicedAt": "2026-08-24T18:56:54.790Z",
       "serviceHistory": [],
-      "createdAt": "2026-03-27T09:21:24.365Z"
+      "createdAt": "2026-03-27T18:56:54.790Z"
     },
     {
       "id": "eq-102",
@@ -1213,9 +1174,9 @@
       "status": "UNDER_MAINTENANCE",
       "condition": "POOR",
       "location": "Cardio Deck - Station 2",
-      "lastServicedAt": "2026-09-11T09:21:24.365Z",
+      "lastServicedAt": "2026-09-11T18:56:54.790Z",
       "serviceHistory": [],
-      "createdAt": "2026-03-27T09:21:24.365Z"
+      "createdAt": "2026-03-27T18:56:54.790Z"
     },
     {
       "id": "eq-103",
@@ -1229,9 +1190,9 @@
       "status": "OPERATIONAL",
       "condition": "EXCELLENT",
       "location": "Rowing & HIIT Zone",
-      "lastServicedAt": "2026-08-09T09:21:24.366Z",
+      "lastServicedAt": "2026-08-09T18:56:54.790Z",
       "serviceHistory": [],
-      "createdAt": "2026-05-26T09:21:24.366Z"
+      "createdAt": "2026-05-26T18:56:54.790Z"
     },
     {
       "id": "eq-104",
@@ -1245,9 +1206,9 @@
       "status": "OPERATIONAL",
       "condition": "GOOD",
       "location": "Heavy Strength Arena",
-      "lastServicedAt": "2026-07-25T09:21:24.366Z",
+      "lastServicedAt": "2026-07-25T18:56:54.790Z",
       "serviceHistory": [],
-      "createdAt": "2026-01-16T09:21:24.366Z"
+      "createdAt": "2026-01-16T18:56:54.790Z"
     },
     {
       "id": "eq-105",
@@ -1261,18 +1222,18 @@
       "status": "OPERATIONAL",
       "condition": "GOOD",
       "location": "Cable & Functional Training",
-      "lastServicedAt": "2026-09-20T09:21:24.366Z",
+      "lastServicedAt": "2026-09-20T18:56:54.790Z",
       "serviceHistory": [
         {
           "id": "srv-1",
           "ticketId": "tkt-202",
-          "date": "2026-09-20T09:21:24.366Z",
+          "date": "2026-09-20T18:56:54.790Z",
           "description": "Bearing repacked with high-grade synthetic grease. Cable inspected for frays (passed).",
           "performedBy": "Kassahun Mengistu",
           "cost": 35
         }
       ],
-      "createdAt": "2025-11-27T09:21:24.366Z"
+      "createdAt": "2025-11-27T18:56:54.790Z"
     },
     {
       "id": "eq-106",
@@ -1286,9 +1247,9 @@
       "status": "OPERATIONAL",
       "condition": "EXCELLENT",
       "location": "Free Weights Area",
-      "lastServicedAt": "2026-06-25T09:21:24.366Z",
+      "lastServicedAt": "2026-06-25T18:56:54.790Z",
       "serviceHistory": [],
-      "createdAt": "2026-03-07T09:21:24.366Z"
+      "createdAt": "2026-03-07T18:56:54.790Z"
     }
   ],
   "maintenanceTickets": [
@@ -1303,7 +1264,7 @@
       "severity": "CRITICAL_SAFETY_HAZARD",
       "status": "IN_PROGRESS",
       "reportedBy": "Coach Marcus",
-      "reportedAt": "2026-09-22T09:21:24.366Z",
+      "reportedAt": "2026-09-22T18:56:54.790Z",
       "assigneeId": "user-maint-1",
       "assigneeName": "Kassahun Mengistu",
       "expectedCost": 150,
@@ -1311,13 +1272,13 @@
         {
           "status": "OPEN",
           "changedBy": "Coach Marcus",
-          "changedAt": "2026-09-22T09:21:24.366Z",
+          "changedAt": "2026-09-22T18:56:54.790Z",
           "notes": "Member reported slipping belt during sprint."
         },
         {
           "status": "IN_PROGRESS",
           "changedBy": "Kassahun Mengistu",
-          "changedAt": "2026-09-22T21:21:24.366Z",
+          "changedAt": "2026-09-23T06:56:54.790Z",
           "notes": "Disassembled motor cover, diagnosing tensioner assembly."
         }
       ]
@@ -1333,10 +1294,10 @@
       "severity": "MINOR_DEFECT",
       "status": "RESOLVED",
       "reportedBy": "Selam Tesfaye",
-      "reportedAt": "2026-09-19T09:21:24.366Z",
+      "reportedAt": "2026-09-19T18:56:54.790Z",
       "assigneeId": "user-maint-1",
       "assigneeName": "Kassahun Mengistu",
-      "resolvedAt": "2026-09-20T09:21:24.366Z",
+      "resolvedAt": "2026-09-20T18:56:54.790Z",
       "resolvedBy": "Kassahun Mengistu",
       "resolutionNotes": "Bearing repacked with high-grade synthetic grease. Cable inspected for frays (passed).",
       "resolutionCost": 35,
@@ -1344,13 +1305,13 @@
         {
           "status": "OPEN",
           "changedBy": "Selam Tesfaye",
-          "changedAt": "2026-09-19T09:21:24.366Z",
+          "changedAt": "2026-09-19T18:56:54.790Z",
           "notes": "Squeaking reported during cable flyes."
         },
         {
           "status": "RESOLVED",
           "changedBy": "Kassahun Mengistu",
-          "changedAt": "2026-09-20T09:21:24.366Z",
+          "changedAt": "2026-09-20T18:56:54.790Z",
           "notes": "Bearing repacked with grease, fully tested."
         }
       ]
@@ -1368,7 +1329,7 @@
       "startTime": "06:00",
       "endTime": "14:00",
       "status": "CLOCKED_IN",
-      "clockedInAt": "2026-09-23T09:21:24.366Z",
+      "clockedInAt": "2026-09-23T18:56:54.791Z",
       "notes": "Opening shift, till verified at $150 start float."
     },
     {
@@ -1382,7 +1343,7 @@
       "startTime": "07:00",
       "endTime": "15:00",
       "status": "CLOCKED_IN",
-      "clockedInAt": "2026-09-23T09:21:24.366Z",
+      "clockedInAt": "2026-09-23T18:56:54.791Z",
       "notes": "Morning HIIT boot camp and 3 scheduled 1-on-1 PT sessions."
     },
     {
@@ -1426,7 +1387,7 @@
       "message": "Interested in touring the Olympic lap pool and sauna suite.",
       "notes": "Trial booked for tomorrow 10am. Needs tour with coach.",
       "status": "NEW",
-      "createdAt": "2026-09-23T06:21:24.366Z"
+      "createdAt": "2026-09-23T15:56:54.791Z"
     },
     {
       "id": "lead-402",
@@ -1441,7 +1402,7 @@
       "message": "Looking to start next week with locker assignment.",
       "notes": "Called on phone; confirmed registration date for Monday.",
       "status": "CONTACTED",
-      "createdAt": "2026-09-22T15:21:24.366Z"
+      "createdAt": "2026-09-23T00:56:54.791Z"
     },
     {
       "id": "lead-403",
@@ -1454,7 +1415,7 @@
       "message": "Inquiring about company package for 15 employees.",
       "notes": "Sent corporate rate sheet via email.",
       "status": "CONTACTED",
-      "createdAt": "2026-09-21T21:21:24.366Z"
+      "createdAt": "2026-09-22T06:56:54.791Z"
     }
   ],
   "auditEvents": [
@@ -1468,7 +1429,7 @@
       "entityType": "ORGANIZATION",
       "entityId": "tenant-1",
       "details": "Initial system setup and organization provisioning for Apex Fitness Hub",
-      "timestamp": "2026-08-24T09:21:24.364Z"
+      "timestamp": "2026-08-24T18:56:54.790Z"
     }
   ],
   "ptAssignments": [
@@ -1485,7 +1446,7 @@
       "sessionsRemaining": 8,
       "status": "ACTIVE",
       "notes": "Hypertrophy & progressive overload focus. 3 sessions per week.",
-      "createdAt": "2026-08-24T09:21:24.366Z"
+      "createdAt": "2026-08-24T18:56:54.790Z"
     },
     {
       "id": "pta-102",
@@ -1500,7 +1461,7 @@
       "sessionsRemaining": 22,
       "status": "ACTIVE",
       "notes": "VIP Athletic Conditioning & recovery program.",
-      "createdAt": "2026-09-13T09:21:24.366Z"
+      "createdAt": "2026-09-13T18:56:54.790Z"
     }
   ]
 }

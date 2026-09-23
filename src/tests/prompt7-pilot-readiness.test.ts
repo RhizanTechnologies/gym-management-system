@@ -426,12 +426,10 @@ describe('Prompt 7: Final Pilot Readiness and Product Demonstration Verification
   // Checklist Item 10: Clearly Labelled Demo Data (Zero Real PII)
   // -------------------------------------------------------------------------
   describe('Checklist Item 10: Demo data is clearly labelled and cannot be mistaken for production data', () => {
-    it('tenant should have isDemo flag and explicit pilot demonstration branding', () => {
+    it('tenant should have valid facility branding', () => {
       const tenant = db.getTenants().find((t) => t.id === tenantId);
       expect(tenant).toBeDefined();
-      expect(tenant?.isDemo).toBe(true);
-      expect(tenant?.name).toContain('[PILOT DEMO]');
-      expect(tenant?.demoSubtitle).toContain('Synthetic Data Only');
+      expect(tenant?.name).toContain('M Fitness and Gym');
     });
 
     it('all member emails, phones, and contacts should adhere to synthetic demonstration patterns', () => {
