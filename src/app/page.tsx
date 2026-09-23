@@ -692,7 +692,7 @@ export default function LandingPage() {
 
                     {/* Price */}
                     <div className="mt-4 flex items-baseline gap-1">
-                      <span className="text-[32px] font-bold text-[#1F2937]">${pkg.price}</span>
+                      <span className="text-[32px] font-bold text-[#1F2937]">ETB {pkg.price.toLocaleString()}</span>
                       <span className="text-[13px] text-[#1F2937]/70">
                         /{pkg.billingPeriod ? pkg.billingPeriod.toLowerCase() : 'term'}
                       </span>
@@ -700,7 +700,7 @@ export default function LandingPage() {
 
                     {pkg.admissionFee > 0 && (
                       <p className="text-[12px] text-[#1F2937]/60 mt-0.5">
-                        One-time admission: ${pkg.admissionFee}
+                        One-time admission: ETB {pkg.admissionFee.toLocaleString()}
                       </p>
                     )}
 

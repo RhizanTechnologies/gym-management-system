@@ -56,12 +56,12 @@ See you at the gym! 💪🏋️‍♂️`;
  */
 export function getDebtReminderUrl(member: Member, tenant: Tenant): string {
   const phone = formatPhoneForWhatsApp(member.phone);
-  const currency = tenant.currencySymbol || '$';
+  const currency = tenant.currencySymbol || 'ETB';
 
   const message = `Hello ${member.firstName}! 👋
 This is ${tenant.name} accounting.
 
-We would like to remind you of a pending balance of ${currency}${member.dueBalance.toFixed(2)} on your gym account.
+We would like to remind you of a pending balance of ${currency} ${member.dueBalance.toFixed(2)} on your gym account.
 
 Please visit the front desk to settle your balance at your earliest convenience.
 

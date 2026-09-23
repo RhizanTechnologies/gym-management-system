@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { MembershipPlan } from '@/lib/types';
+import { formatCurrency } from '@/lib/utils';
 import { EditPlanModal } from '@/components/EditPlanModal';
 import {
   Layers,
@@ -211,7 +212,7 @@ export default function PlansPage() {
                 </div>
 
                 <div className="pt-2 flex items-baseline gap-1">
-                  <span className="text-[32px] font-bold text-[#1F2937]">${plan.price}</span>
+                  <span className="text-[32px] font-bold text-[#1F2937]">{formatCurrency(plan.price, currentTenant.currencySymbol, currentTenant.currency)}</span>
                   <span className="text-[14px] text-[#1F2937]/70">/ {plan.billingPeriod || `${plan.durationDays}d`}</span>
                 </div>
 
@@ -349,7 +350,7 @@ export default function PlansPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-bold uppercase text-[#1F2937]/80 mb-1">Price ($) *</label>
+                  <label className="block text-[12px] font-bold uppercase text-[#1F2937]/80 mb-1">Price ({currentTenant.currencySymbol || 'ETB'}) *</label>
                   <input
                     type="number"
                     required
@@ -361,7 +362,7 @@ export default function PlansPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-bold uppercase text-[#1F2937]/80 mb-1">Admission Fee ($)</label>
+                  <label className="block text-[12px] font-bold uppercase text-[#1F2937]/80 mb-1">Admission Fee ({currentTenant.currencySymbol || 'ETB'})</label>
                   <input
                     type="number"
                     min="0"

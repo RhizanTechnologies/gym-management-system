@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { Member, Tenant } from '@/lib/types';
-import { formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   X,
   Printer,
@@ -269,7 +269,7 @@ export function MemberCardModal({ member, tenant, onClose, onRenew, onMemberUpda
               <span className="text-[10px] font-bold uppercase text-slate-500">Assigned Locker</span>
               <p className="font-extrabold text-emerald-700">{member.assignedLockerNumber || 'None Assigned'}</p>
               <p className="text-[10px] text-slate-500">
-                {member.dueBalance > 0 ? `Unpaid: $${member.dueBalance}` : 'Balance: $0.00'}
+                {member.dueBalance > 0 ? `Unpaid: ${formatCurrency(member.dueBalance, tenant.currencySymbol, tenant.currency)}` : `Balance: ${formatCurrency(0, tenant.currencySymbol, tenant.currency)}`}
               </p>
             </div>
           </div>

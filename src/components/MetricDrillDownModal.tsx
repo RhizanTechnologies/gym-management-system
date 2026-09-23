@@ -103,7 +103,7 @@ export function MetricDrillDownModal({
           <div className="p-3 bg-white dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
             <div className="text-xs text-slate-500 dark:text-slate-400">Reconciled Total</div>
             <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
-              {summary.unit === '$' ? formatCurrency(summary.primaryValue) : `${summary.primaryValue} ${summary.unit || ''}`}
+              {summary.unit === '$' || summary.unit === 'ETB' ? formatCurrency(summary.primaryValue) : `${summary.primaryValue} ${summary.unit || ''}`}
             </div>
           </div>
           <div className="p-3 bg-white dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 col-span-2 sm:col-span-1">

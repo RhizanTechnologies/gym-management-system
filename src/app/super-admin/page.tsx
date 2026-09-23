@@ -26,8 +26,8 @@ export default function SuperAdminPage() {
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [currency, setCurrency] = useState('USD');
-  const [currencySymbol, setCurrencySymbol] = useState('$');
+  const [currency, setCurrency] = useState('ETB');
+  const [currencySymbol, setCurrencySymbol] = useState('ETB');
   const [maxCapacity, setMaxCapacity] = useState(100);
   const [monthlyFee, setMonthlyFee] = useState(99);
   const [planTier, setPlanTier] = useState<PlanTier>('PRO');
@@ -115,7 +115,7 @@ export default function SuperAdminPage() {
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <span className="text-xs font-bold uppercase text-slate-500">Platform MRR</span>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-emerald-700">${totalMRR}</span>
+            <span className="text-3xl font-black text-emerald-700">ETB {totalMRR.toLocaleString()}</span>
             <span className="text-xs text-slate-500">/ month</span>
           </div>
           <p className="mt-1 text-[11px] text-emerald-700 font-medium">From gym SaaS subscriptions</p>

@@ -262,7 +262,7 @@ export default function POSBillingPage() {
                   </div>
 
                   <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-2">
-                    <span className="font-black text-sm text-slate-900">${prod.price.toFixed(2)}</span>
+                    <span className="font-black text-sm text-slate-900">{formatCurrency(prod.price, currentTenant.currencySymbol, currentTenant.currency)}</span>
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                       <Plus className="h-4 w-4" />
                     </span>
@@ -318,7 +318,7 @@ export default function POSBillingPage() {
                     >
                       <div className="overflow-hidden max-w-[130px]">
                         <p className="font-bold text-slate-900 truncate">{item.product.name}</p>
-                        <p className="text-[10px] text-slate-500">${item.product.price.toFixed(2)} each</p>
+                        <p className="text-[10px] text-slate-500">{formatCurrency(item.product.price, currentTenant.currencySymbol, currentTenant.currency)} each</p>
                       </div>
 
                       <div className="flex items-center gap-2">
@@ -338,7 +338,7 @@ export default function POSBillingPage() {
                       </div>
 
                       <span className="font-extrabold text-slate-900">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        {formatCurrency(item.product.price * item.quantity, currentTenant.currencySymbol, currentTenant.currency)}
                       </span>
                     </div>
                   ))
@@ -356,7 +356,7 @@ export default function POSBillingPage() {
               </div>
               <div className="flex items-center justify-between text-sm font-black">
                 <span className="text-slate-900">Subtotal:</span>
-                <span className="text-emerald-700 text-lg font-extrabold">${subtotal.toFixed(2)}</span>
+                <span className="text-emerald-700 text-lg font-extrabold">{formatCurrency(subtotal, currentTenant.currencySymbol, currentTenant.currency)}</span>
               </div>
 
               {/* Payment Method Selector */}
@@ -425,8 +425,8 @@ export default function POSBillingPage() {
                           {inv.type}
                         </span>
                       </td>
-                      <td className="px-4 py-3.5 font-bold text-slate-900">${inv.amount.toFixed(2)}</td>
-                      <td className="px-4 py-3.5 font-extrabold text-emerald-700">${inv.paidAmount.toFixed(2)}</td>
+                      <td className="px-4 py-3.5 font-bold text-slate-900">{formatCurrency(inv.amount, currentTenant.currencySymbol, currentTenant.currency)}</td>
+                      <td className="px-4 py-3.5 font-extrabold text-emerald-700">{formatCurrency(inv.paidAmount, currentTenant.currencySymbol, currentTenant.currency)}</td>
                       <td className="px-4 py-3.5 text-slate-600 uppercase">{inv.paymentMethod}</td>
                       <td className="px-4 py-3.5 text-slate-500">{formatDate(inv.createdAt)}</td>
                       <td className="px-5 py-3.5 text-right">

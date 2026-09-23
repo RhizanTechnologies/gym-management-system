@@ -10,7 +10,7 @@ import {
   PersonalTrainingAssignment,
   Member,
 } from '@/lib/types';
-import { formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { AddStaffModal } from '@/components/AddStaffModal';
 import { EditStaffModal } from '@/components/EditStaffModal';
 import {
@@ -35,6 +35,7 @@ import {
   X,
   UserCheck,
   CalendarCheck,
+  Trash2,
 } from 'lucide-react';
 
 export default function StaffManagementPage() {
@@ -85,6 +86,8 @@ export default function StaffManagementPage() {
     trainerId: '',
     memberId: '',
     totalSessions: 10,
+    feeETB: 2000,
+    schedule: 'Mon, Wed, Fri 06:30 AM',
     startDate: new Date().toISOString().split('T')[0],
     notes: '',
   });
@@ -253,8 +256,11 @@ export default function StaffManagementPage() {
           trainerName: trainer.name,
           memberId: member.id,
           memberName: `${member.firstName} ${member.lastName}`,
+          clientPhone: member.phone,
           planName: (member as any).planName || (member as any).planId || 'Personal Training',
           totalSessions: Number(ptForm.totalSessions),
+          feeETB: ptForm.feeETB,
+          schedule: ptForm.schedule,
           startDate: ptForm.startDate,
           notes: ptForm.notes,
         }),
@@ -267,6 +273,8 @@ export default function StaffManagementPage() {
           trainerId: '',
           memberId: '',
           totalSessions: 10,
+          feeETB: 2000,
+          schedule: 'Mon, Wed, Fri 06:30 AM',
           startDate: new Date().toISOString().split('T')[0],
           notes: '',
         });
@@ -289,7 +297,8 @@ export default function StaffManagementPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: assignmentId,
-          action: 'LOG_SESSION',
+          tenantId: currentTenant.id,
+          sessionsCompleted: 1,
         }),
       });
 
@@ -300,6 +309,20 @@ export default function StaffManagementPage() {
       console.error('PT session log failed', e);
     } finally {
       setCompletingPTId(null);
+    }
+  };
+
+  const handleCancelPTAssignment = async (assignmentId: string) => {
+    if (!confirm('Are you sure you want to cancel / remove this personal trainer booking?')) return;
+    try {
+      const res = await fetch(`/api/staff/assignments?id=${assignmentId}&tenantId=${currentTenant.id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        fetchData();
+      }
+    } catch (e) {
+      console.error('Cancel PT assignment error', e);
     }
   };
 
@@ -449,7 +472,7 @@ export default function StaffManagementPage() {
               : 'border-transparent text-slate-500 hover:text-slate-900'
           }`}
         >
-          <span>PT Coaching Assignments</span>
+          <span>Personal Trainers & Bookings</span>
           <span className="rounded-full bg-emerald-600 px-2 py-0.2 text-[10px] text-white font-bold">
             {assignments.length}
           </span>
@@ -745,116 +768,218 @@ export default function StaffManagementPage() {
         </div>
       )}
 
-      {/* TAB 3: PERSONAL TRAINING ASSIGNMENTS */}
+      {/* TAB 3: PERSONAL TRAINERS & BOOKINGS */}
       {!loading && !fetchError && activeTab === 'ASSIGNMENTS' && (
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">Personal Training Client Assignments</h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Trainers only see their assigned PT clients; managers can assign trainers and track session progress.
-              </p>
-            </div>
-            {canManageSchedules && (
-              <button
-                onClick={() => {
-                  setActionError(null);
-                  if (trainersList.length > 0 && !ptForm.trainerId) {
-                    setPtForm((prev) => ({ ...prev, trainerId: trainersList[0].id }));
-                  }
-                  if (members.length > 0 && !ptForm.memberId) {
-                    setPtForm((prev) => ({ ...prev, memberId: members[0].id }));
-                  }
-                  setShowPTModal(true);
-                }}
-                className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                <span>Assign Client</span>
-              </button>
-            )}
-          </div>
-
-          <div className="divide-y divide-slate-100">
-            {assignments.length === 0 ? (
-              <div className="py-12 text-center text-xs text-slate-500">
-                <Dumbbell className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-                <p className="font-bold text-slate-700">No personal training assignments found.</p>
-                <p className="mt-0.5">
-                  {canManageSchedules
-                    ? 'Click "Assign Client" to assign a personal trainer to a member.'
-                    : 'You currently have no assigned PT clients.'}
+        <div className="space-y-6">
+          {/* Section 1: Active Personal Trainers Grid for Owner */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-100 gap-3">
+              <div>
+                <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                  <Dumbbell className="h-5 w-5 text-emerald-600" />
+                  <span>Personal Trainers Roster</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Overview of all personal trainers, active trainee counts, and total completed workout sessions.
                 </p>
               </div>
-            ) : (
-              assignments.map((assignment) => {
-                const total = assignment.totalSessions ?? assignment.sessionsTotal ?? 0;
-                const remaining = assignment.remainingSessions ?? assignment.sessionsRemaining ?? 0;
-                const completed = assignment.completedSessions ?? (total - remaining);
 
-                return (
-                  <div key={assignment.id} className="p-5 hover:bg-slate-50/70 transition-colors">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {canManageSchedules && (
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 transition-colors"
+                >
+                  <UserPlus className="h-3.5 w-3.5" />
+                  <span>+ Add New Trainer</span>
+                </button>
+              )}
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+              {trainersList.length === 0 ? (
+                <div className="col-span-full py-8 text-center text-xs text-slate-500">
+                  No personal trainers registered yet. Click &quot;Add New Trainer&quot; to onboard a coach.
+                </div>
+              ) : (
+                trainersList.map((t) => {
+                  const activeTrainees = assignments.filter((a) => a.trainerId === t.id && a.status === 'ACTIVE').length;
+                  const totalSessionsGiven = assignments
+                    .filter((a) => a.trainerId === t.id)
+                    .reduce((sum, a) => {
+                      const total = a.totalSessions ?? a.sessionsTotal ?? 0;
+                      const remaining = a.remainingSessions ?? a.sessionsRemaining ?? 0;
+                      return sum + Math.max(0, total - remaining);
+                    }, 0);
+
+                  return (
+                    <div
+                      key={t.id}
+                      className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 hover:bg-slate-50 hover:border-slate-200 transition-all flex flex-col justify-between"
+                    >
                       <div className="flex items-start gap-3">
-                        <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
-                          <Dumbbell className="h-5 w-5" />
+                        <div className="h-10 w-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-sm shrink-0">
+                          {t.name.charAt(0)}
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-extrabold text-sm text-slate-900">{assignment.memberName}</span>
-                            <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-700">
-                              Coach: {assignment.trainerName}
-                            </span>
-                            <span
-                              className={`rounded px-2 py-0.5 text-[10px] font-bold ${
-                                assignment.status === 'ACTIVE'
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : 'bg-slate-100 text-slate-700'
-                              }`}
-                            >
-                              {assignment.status}
-                            </span>
-                          </div>
-
-                          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-slate-600">
-                            <span>
-                              Progress: <strong>{completed} / {total} Sessions</strong>
-                            </span>
-                            <span>•</span>
-                            <span className="font-semibold text-emerald-700">
-                              {remaining} Remaining
-                            </span>
-                            <span>•</span>
-                            <span>Started: {assignment.startDate}</span>
-                            {assignment.assignedBy && (
-                              <>
-                                <span>•</span>
-                                <span>Assigned by: {assignment.assignedBy}</span>
-                              </>
-                            )}
-                          </div>
-
-                          {assignment.notes && <p className="text-[11px] text-slate-500 mt-1">{assignment.notes}</p>}
+                        <div className="overflow-hidden">
+                          <h4 className="font-extrabold text-sm text-slate-900 truncate">Coach {t.name}</h4>
+                          <p className="text-[11px] text-slate-500 truncate">{t.email}</p>
+                          {t.phone && <p className="text-[11px] text-slate-600 font-mono mt-0.5">{t.phone}</p>}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 self-start sm:self-center">
-                        {assignment.status === 'ACTIVE' && remaining > 0 && (
-                          <button
-                            onClick={() => handleLogPTSession(assignment.id)}
-                            disabled={completingPTId === assignment.id}
-                            className="rounded-xl border border-emerald-300 bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition-colors shadow-xs"
-                            title="Log 1 completed PT workout session"
-                          >
-                            {completingPTId === assignment.id ? 'Saving...' : 'Log Completed Session'}
-                          </button>
-                        )}
+                      <div className="mt-4 pt-3 border-t border-slate-200/60 grid grid-cols-2 gap-2 text-center text-xs">
+                        <div className="bg-white rounded-xl p-2 border border-slate-100">
+                          <span className="block font-black text-slate-900 text-sm">{activeTrainees}</span>
+                          <span className="text-[10px] text-slate-500 font-semibold uppercase">Active Clients</span>
+                        </div>
+                        <div className="bg-white rounded-xl p-2 border border-slate-100">
+                          <span className="block font-black text-emerald-700 text-sm">{totalSessionsGiven}</span>
+                          <span className="text-[10px] text-slate-500 font-semibold uppercase">Workouts Done</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })
-            )}
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Section 2: Trainer-Member Pairings Matrix */}
+          <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h3 className="text-base font-extrabold text-slate-900">Trainer & Member Bookings</h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Live pairings of members with their assigned trainers, session packages, and workout progress.
+                </p>
+              </div>
+              {canManageSchedules && (
+                <button
+                  onClick={() => {
+                    setActionError(null);
+                    if (trainersList.length > 0 && !ptForm.trainerId) {
+                      setPtForm((prev) => ({ ...prev, trainerId: trainersList[0].id }));
+                    }
+                    if (members.length > 0 && !ptForm.memberId) {
+                      setPtForm((prev) => ({ ...prev, memberId: members[0].id }));
+                    }
+                    setShowPTModal(true);
+                  }}
+                  className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-emerald-700 transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>+ Book Personal Trainer</span>
+                </button>
+              )}
+            </div>
+
+            <div className="divide-y divide-slate-100">
+              {assignments.length === 0 ? (
+                <div className="py-12 text-center text-xs text-slate-500">
+                  <Dumbbell className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                  <p className="font-bold text-slate-700">No personal training bookings found.</p>
+                  <p className="mt-0.5">
+                    {canManageSchedules
+                      ? 'Click "Book Personal Trainer" to book a trainer for a member.'
+                      : 'You currently have no assigned PT clients.'}
+                  </p>
+                </div>
+              ) : (
+                assignments.map((assignment) => {
+                  const total = assignment.totalSessions ?? assignment.sessionsTotal ?? 0;
+                  const remaining = assignment.remainingSessions ?? assignment.sessionsRemaining ?? 0;
+                  const completed = assignment.completedSessions ?? Math.max(0, total - remaining);
+                  const percent = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+                  const feeText = assignment.feeETB ? formatCurrency(assignment.feeETB, currentTenant.currencySymbol, currentTenant.currency) : null;
+
+                  return (
+                    <div key={assignment.id} className="p-5 hover:bg-slate-50/70 transition-colors">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-start gap-3.5">
+                          <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-800 font-extrabold text-sm shadow-xs">
+                            {assignment.memberName.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-black text-sm text-slate-900">{assignment.memberName}</span>
+                              <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 flex items-center gap-1">
+                                <Dumbbell className="h-3 w-3 text-emerald-600" />
+                                <span>Coach {assignment.trainerName}</span>
+                              </span>
+                              <span
+                                className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                                  assignment.status === 'ACTIVE'
+                                    ? 'bg-teal-100 text-teal-800'
+                                    : 'bg-slate-100 text-slate-600'
+                                }`}
+                              >
+                                {assignment.status}
+                              </span>
+                              {feeText && (
+                                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-bold text-white">
+                                  {feeText}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-slate-600">
+                              <span>
+                                Progress: <strong>{completed} / {total} Sessions ({percent}%)</strong>
+                              </span>
+                              <span>•</span>
+                              <span className="font-semibold text-emerald-700">
+                                {remaining} Remaining
+                              </span>
+                              <span>•</span>
+                              <span>Started: {formatDate(assignment.startDate)}</span>
+                              {assignment.schedule && (
+                                <>
+                                  <span>•</span>
+                                  <span className="font-medium text-slate-700">
+                                    <Clock className="inline h-3 w-3 text-emerald-600 mr-1" />
+                                    {assignment.schedule}
+                                  </span>
+                                </>
+                              )}
+                              {assignment.assignedBy && (
+                                <>
+                                  <span>•</span>
+                                  <span>Booked by: {assignment.assignedBy}</span>
+                                </>
+                              )}
+                            </div>
+
+                            {assignment.notes && <p className="text-[11px] text-slate-500 mt-1">{assignment.notes}</p>}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 self-start sm:self-center">
+                          {assignment.status === 'ACTIVE' && remaining > 0 && (
+                            <button
+                              onClick={() => handleLogPTSession(assignment.id)}
+                              disabled={completingPTId === assignment.id}
+                              className="rounded-xl border border-emerald-300 bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition-colors shadow-2xs"
+                              title="Log 1 completed PT workout session"
+                            >
+                              {completingPTId === assignment.id ? 'Saving...' : 'Log Completed Session'}
+                            </button>
+                          )}
+                          {canManageSchedules && (
+                            <button
+                              onClick={() => handleCancelPTAssignment(assignment.id)}
+                              className="rounded-xl border border-slate-200 bg-white p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                              title="Cancel / Remove Booking"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -985,15 +1110,23 @@ export default function StaffManagementPage() {
         </div>
       )}
 
-      {/* MODAL 2: Assign PT Client Modal */}
+      {/* MODAL 2: Assign / Book Personal Trainer Modal */}
       {showPTModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-in fade-in duration-150">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-base font-bold text-slate-900">Assign Personal Trainer</h3>
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                  <Dumbbell className="h-4 w-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">Book Personal Trainer</h3>
+                  <p className="text-[11px] text-slate-500">Assign trainer and setup session package</p>
+                </div>
+              </div>
               <button
                 onClick={() => setShowPTModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -1038,17 +1171,34 @@ export default function StaffManagementPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Total Sessions *</label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
+                  <label className="block font-semibold text-slate-700 mb-1">Session Count *</label>
+                  <select
                     value={ptForm.totalSessions}
                     onChange={(e) => setPtForm({ ...ptForm, totalSessions: parseInt(e.target.value) || 1 })}
                     className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-emerald-600 focus:outline-none"
-                  />
+                  >
+                    <option value={5}>5 Sessions</option>
+                    <option value={10}>10 Sessions</option>
+                    <option value={15}>15 Sessions</option>
+                    <option value={20}>20 Sessions</option>
+                    <option value={30}>30 Sessions (Monthly VIP)</option>
+                  </select>
                 </div>
 
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">Fee ({currentTenant.currencySymbol || 'ETB'})</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="50"
+                    value={ptForm.feeETB}
+                    onChange={(e) => setPtForm({ ...ptForm, feeETB: Number(e.target.value) || 0 })}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 font-bold focus:border-emerald-600 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">Start Date *</label>
                   <input
@@ -1056,6 +1206,17 @@ export default function StaffManagementPage() {
                     required
                     value={ptForm.startDate}
                     onChange={(e) => setPtForm({ ...ptForm, startDate: e.target.value })}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-emerald-600 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">Schedule</label>
+                  <input
+                    type="text"
+                    placeholder="Mon, Wed, Fri 06:30"
+                    value={ptForm.schedule}
+                    onChange={(e) => setPtForm({ ...ptForm, schedule: e.target.value })}
                     className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-emerald-600 focus:outline-none"
                   />
                 </div>

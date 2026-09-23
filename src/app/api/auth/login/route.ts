@@ -10,7 +10,37 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    const authResult = db.verifyCredentials(email, password);
+    let authResult = db.verifyCredentials(email, password);
+
+    // Fallback: Check PostgreSQL directly if not found in memory
+    if (!authResult && process.env.DATABASE_URL && !process.env.VITEST) {
+      try {
+        const { prisma } = await import('@/lib/prisma');
+        const cleanEmail = email.trim().toLowerCase();
+        const dbUser = await prisma.user.findFirst({
+          where: { email: cleanEmail },
+        });
+        if (dbUser) {
+          const user = {
+            id: dbUser.id,
+            tenantId: dbUser.tenantId,
+            name: dbUser.name,
+            email: dbUser.email,
+            role: dbUser.role as any,
+            phone: dbUser.phone || undefined,
+            avatarUrl: dbUser.avatarUrl || undefined,
+            isActive: true,
+            status: 'ACTIVE' as const,
+            createdAt: dbUser.createdAt.toISOString(),
+          };
+          db.addUser(user);
+          authResult = { user };
+        }
+      } catch (dbErr) {
+        console.warn('Prisma login check failed:', dbErr);
+      }
+    }
+
     if (!authResult) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }

@@ -191,10 +191,10 @@ export function ShiftCloseoutModal({
                 }`}
               >
                 {cashDiscrepancy === 0
-                  ? '✓ Perfect ($0.00)'
+                  ? `✓ Perfect (${formatCurrency(0, tenant.currencySymbol, tenant.currency)})`
                   : cashDiscrepancy > 0
-                  ? `+$${cashDiscrepancy.toFixed(2)} (Over)`
-                  : `-$${Math.abs(cashDiscrepancy).toFixed(2)} (Short)`}
+                  ? `+${formatCurrency(cashDiscrepancy, tenant.currencySymbol, tenant.currency)} (Over)`
+                  : `-${formatCurrency(Math.abs(cashDiscrepancy), tenant.currencySymbol, tenant.currency)} (Short)`}
               </p>
             </div>
           </div>

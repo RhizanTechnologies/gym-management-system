@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { MembershipPlan, Locker, Tenant } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
+import { formatCurrency } from '@/lib/utils';
 import { X, UserPlus, Sparkles, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 
 interface NewMemberModalProps {
@@ -304,28 +305,28 @@ export function NewMemberModal({ tenant, plans, lockers, initialData, onClose, o
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="text-slate-600">Plan Base Fee ({selectedPlan?.name}):</span>
-              <span className="font-bold text-slate-900">${basePrice.toFixed(2)}</span>
+              <span className="font-bold text-slate-900">{formatCurrency(basePrice, tenant.currencySymbol, tenant.currency)}</span>
             </div>
             {admissionFee > 0 && (
               <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-600">Admission / Registration Fee:</span>
-                <span className="font-bold text-slate-900">${admissionFee.toFixed(2)}</span>
+                <span className="font-bold text-slate-900">{formatCurrency(admissionFee, tenant.currencySymbol, tenant.currency)}</span>
               </div>
             )}
             {numDiscount > 0 && (
               <div className="flex items-center justify-between text-xs text-emerald-700">
                 <span>Applied Discount:</span>
-                <span className="font-bold">-${numDiscount.toFixed(2)}</span>
+                <span className="font-bold">-{formatCurrency(numDiscount, tenant.currencySymbol, tenant.currency)}</span>
               </div>
             )}
             <div className="flex items-center justify-between border-t border-slate-200 pt-2 text-xs font-extrabold">
               <span className="text-emerald-700">Total Payable:</span>
-              <span className="text-base text-emerald-700">${totalPrice.toFixed(2)}</span>
+              <span className="text-base text-emerald-700">{formatCurrency(totalPrice, tenant.currencySymbol, tenant.currency)}</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1">Discount ($)</label>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">Discount ({tenant.currencySymbol || 'ETB'})</label>
                 <input
                   type="number"
                   min="0"
@@ -337,7 +338,7 @@ export function NewMemberModal({ tenant, plans, lockers, initialData, onClose, o
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1">Amount Paid ($)</label>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">Amount Paid ({tenant.currencySymbol || 'ETB'})</label>
                 <input
                   type="number"
                   min="0"
@@ -365,7 +366,7 @@ export function NewMemberModal({ tenant, plans, lockers, initialData, onClose, o
 
             {dueBalance > 0 && (
               <div className="rounded-lg bg-amber-50 border border-amber-200 p-2 text-xs text-amber-800">
-                ⚠️ Outstanding Balance: <strong>${dueBalance.toFixed(2)}</strong> will remain on member account.
+                ⚠️ Outstanding Balance: <strong>{formatCurrency(dueBalance, tenant.currencySymbol, tenant.currency)}</strong> will remain on member account.
               </div>
             )}
           </div>

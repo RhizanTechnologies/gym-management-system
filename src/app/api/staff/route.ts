@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/storage';
+import { prisma } from '@/lib/prisma';
 import { authorizeServerRequest } from '@/lib/rbac';
+import { User } from '@/lib/types';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -12,6 +14,38 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
   }
 
+  // 1. Live database query when DATABASE_URL is available
+  if (process.env.DATABASE_URL && !process.env.VITEST) {
+    try {
+      const dbUsers = await prisma.user.findMany({
+        where: { tenantId },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      const users: User[] = dbUsers.map((u) => ({
+        id: u.id,
+        tenantId: u.tenantId,
+        name: u.name,
+        email: u.email,
+        role: u.role as any,
+        phone: u.phone || undefined,
+        avatarUrl: u.avatarUrl || undefined,
+        isActive: true,
+        status: 'ACTIVE' as const,
+        createdAt: u.createdAt.toISOString(),
+      }));
+
+      // Keep in-memory cache in sync
+      for (const u of users) {
+        db.addUser(u);
+      }
+
+      return NextResponse.json({ users });
+    } catch (e) {
+      console.warn('Prisma query failed, falling back to storage:', e);
+    }
+  }
+
   const users = db.getUsers(tenantId);
   return NextResponse.json({ users });
 }
@@ -21,8 +55,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const tenantId = body.tenantId || 'tenant-1';
 
-    // Server-side authorization check: Only OWNER can create staff and assign roles
-    const auth = authorizeServerRequest(request, 'STAFF_ROLES_SCHEDULES', 'FULL', tenantId);
+    // Server-side authorization check: Only OWNER or Manager can manage staff and roles
+    const auth = authorizeServerRequest(request, 'STAFF_ROLES_SCHEDULES', 'MANAGE', tenantId);
     if (!auth.authorized) {
       return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
     }
@@ -31,18 +65,64 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Name, email, and role are required' }, { status: 400 });
     }
 
-    // Check if email already exists
-    const existing = db.getUsers().find((u) => u.email.toLowerCase() === body.email.toLowerCase());
-    if (existing) {
-      return NextResponse.json({ error: 'A user with this email address already exists' }, { status: 400 });
-    }
+    const cleanEmail = body.email.trim().toLowerCase();
+    const cleanName = body.name.trim();
 
-    const newUser = db.createUser(tenantId, {
-      name: body.name,
-      email: body.email,
-      role: body.role,
-      phone: body.phone,
-    });
+    let newUser: User;
+
+    // 1. Direct database persistence when DATABASE_URL is available
+    if (process.env.DATABASE_URL && !process.env.VITEST) {
+      const existingInDb = await prisma.user.findFirst({
+        where: { email: cleanEmail },
+      });
+
+      if (existingInDb) {
+        return NextResponse.json(
+          { error: 'A user with this email address already exists in the database' },
+          { status: 400 }
+        );
+      }
+
+      const created = await prisma.user.create({
+        data: {
+          id: `user-${Date.now()}`,
+          tenantId,
+          name: cleanName,
+          email: cleanEmail,
+          role: body.role,
+          phone: body.phone?.trim() || null,
+          password: body.password || 'password123',
+        },
+      });
+
+      newUser = {
+        id: created.id,
+        tenantId: created.tenantId,
+        name: created.name,
+        email: created.email,
+        role: created.role as any,
+        phone: created.phone || undefined,
+        isActive: true,
+        status: 'ACTIVE' as const,
+        createdAt: created.createdAt.toISOString(),
+      };
+
+      // Keep memory store in sync
+      db.addUser(newUser);
+    } else {
+      // Check if email already exists in storage
+      const existing = db.getUsers().find((u) => u.email.toLowerCase() === cleanEmail);
+      if (existing) {
+        return NextResponse.json({ error: 'A user with this email address already exists' }, { status: 400 });
+      }
+
+      newUser = db.createUser(tenantId, {
+        name: cleanName,
+        email: cleanEmail,
+        role: body.role,
+        phone: body.phone?.trim(),
+      });
+    }
 
     db.recordAuditEvent({
       tenantId,
@@ -109,6 +189,22 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    // Persist updates to Prisma DB if connected
+    if (process.env.DATABASE_URL && !process.env.VITEST) {
+      const updateData: Record<string, any> = {};
+      if (updates.name) updateData.name = updates.name.trim();
+      if (updates.email) updateData.email = updates.email.trim().toLowerCase();
+      if (updates.role) updateData.role = updates.role;
+      if (updates.phone !== undefined) updateData.phone = updates.phone ? updates.phone.trim() : null;
+
+      if (Object.keys(updateData).length > 0) {
+        await prisma.user.update({
+          where: { id },
+          data: updateData,
+        }).catch((e) => console.warn('Prisma user update failed:', e));
+      }
+    }
+
     const updated = db.updateUser(tenantId, id, updates);
     if (!updated) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -128,13 +224,20 @@ export async function DELETE(request: NextRequest) {
     const tenantId = body.tenantId || searchParams.get('tenantId') || 'tenant-1';
     const id = body.id || searchParams.get('id');
 
-    const auth = authorizeServerRequest(request, 'STAFF_ROLES_SCHEDULES', 'FULL', tenantId);
+    const auth = authorizeServerRequest(request, 'STAFF_ROLES_SCHEDULES', 'MANAGE', tenantId);
     if (!auth.authorized) {
       return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
     }
 
     if (!id) {
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    }
+
+    // Persist deletion to Prisma DB if connected
+    if (process.env.DATABASE_URL && !process.env.VITEST) {
+      await prisma.user.delete({
+        where: { id },
+      }).catch((e) => console.warn('Prisma user delete failed:', e));
     }
 
     const success = db.deleteUser(tenantId, id);

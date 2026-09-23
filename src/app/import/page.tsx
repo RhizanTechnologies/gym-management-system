@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { parsePaperCSV, SAMPLE_PAPER_CSV_TEMPLATE } from '@/lib/paper-importer';
 import { PaperImportRow } from '@/lib/types';
+import { formatCurrency } from '@/lib/utils';
 import {
   FileSpreadsheet,
   Upload,
@@ -264,12 +265,12 @@ export default function PaperImportPage() {
                           <td className="px-3 py-2 font-bold text-slate-900 truncate max-w-[130px]">{row.fullName}</td>
                           <td className="px-3 py-2 text-slate-600 font-mono">{row.phone}</td>
                           <td className="px-3 py-2 text-slate-600">{row.planName}</td>
-                          <td className="px-3 py-2 font-semibold text-emerald-700">${row.amountPaid}</td>
+                          <td className="px-3 py-2 font-semibold text-emerald-700">{formatCurrency(row.amountPaid, currentTenant.currencySymbol, currentTenant.currency)}</td>
                           <td className="px-3 py-2">
                             {row.balanceDue > 0 ? (
-                              <span className="font-bold text-red-600">${row.balanceDue}</span>
+                              <span className="font-bold text-red-600">{formatCurrency(row.balanceDue, currentTenant.currencySymbol, currentTenant.currency)}</span>
                             ) : (
-                              <span className="text-slate-400">$0</span>
+                              <span className="text-slate-400">{formatCurrency(0, currentTenant.currencySymbol, currentTenant.currency)}</span>
                             )}
                           </td>
                           <td className="px-3 py-2 font-mono text-slate-700 font-bold">{row.lockerNumber || '-'}</td>

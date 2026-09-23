@@ -22,6 +22,7 @@ import {
   ShieldAlert,
   Bell,
   FileText,
+  Dumbbell,
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -57,6 +58,12 @@ export function Sidebar() {
       icon: QrCode,
       badge: 'Live',
       roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST'],
+    },
+    {
+      label: isAmharic ? 'የሰልጣኞች ዝርዝር' : 'My Trainees',
+      href: '/trainer',
+      icon: Dumbbell,
+      roles: ['TRAINER'],
     },
     {
       label: isAmharic ? t.members : 'Members',
@@ -104,7 +111,7 @@ export function Sidebar() {
       label: isAmharic ? t.staff : 'Staff & Shifts',
       href: '/staff',
       icon: ShieldCheck,
-      roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'MAINTENANCE_STAFF'],
+      roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'MAINTENANCE_STAFF', 'TRAINER'],
     },
     {
       label: isAmharic ? 'የወረቀት መዝገብ ማስገቢያ' : 'Paper Import',

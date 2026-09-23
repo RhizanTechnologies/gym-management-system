@@ -184,7 +184,7 @@ export function EditPlanModal({ plan, tenant, onClose, onUpdated }: EditPlanModa
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[12px] font-bold uppercase text-[#1F2937]/80 mb-1">Price ($) *</label>
+              <label className="block text-[12px] font-bold uppercase text-[#1F2937]/80 mb-1">Price (ETB) *</label>
               <input
                 type="number"
                 required
@@ -196,7 +196,7 @@ export function EditPlanModal({ plan, tenant, onClose, onUpdated }: EditPlanModa
               />
             </div>
             <div>
-              <label className="block text-[12px] font-bold uppercase text-[#1F2937]/80 mb-1">Admission Fee ($)</label>
+              <label className="block text-[12px] font-bold uppercase text-[#1F2937]/80 mb-1">Admission Fee (ETB)</label>
               <input
                 type="number"
                 min="0"

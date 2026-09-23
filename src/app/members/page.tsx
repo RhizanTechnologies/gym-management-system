@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { Member, MembershipPlan, Locker } from '@/lib/types';
+import { Member, MembershipPlan, Locker, User } from '@/lib/types';
 import { formatDate, formatCurrency } from '@/lib/utils';
 import { MemberCardModal } from '@/components/MemberCardModal';
 import { NewMemberModal } from '@/components/NewMemberModal';
@@ -23,6 +23,11 @@ import {
   RotateCw,
   Edit,
   MessageCircle,
+  Dumbbell,
+  Plus,
+  X,
+  Clock,
+  Calendar,
 } from 'lucide-react';
 import { getRenewalReminderUrl, getDebtReminderUrl, getWelcomePassUrl } from '@/lib/whatsapp';
 
@@ -31,6 +36,8 @@ export default function MembersPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [plans, setPlans] = useState<MembershipPlan[]>([]);
   const [lockers, setLockers] = useState<Locker[]>([]);
+  const [trainers, setTrainers] = useState<User[]>([]);
+  const [trainerFilter, setTrainerFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
@@ -38,7 +45,23 @@ export default function MembersPage() {
   const [showNewModal, setShowNewModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Book Trainer Modal states
+  const [showBookTrainerModal, setShowBookTrainerModal] = useState(false);
+  const [bookingMember, setBookingMember] = useState<Member | null>(null);
+  const [bookingForm, setBookingForm] = useState({
+    trainerId: '',
+    sessionsTotal: 10,
+    feeETB: 2000,
+    schedule: 'Mon, Wed, Fri 06:30 AM',
+    startDate: new Date().toISOString().split('T')[0],
+    notes: '',
+  });
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingError, setBookingError] = useState('');
+  const [bookingSuccess, setBookingSuccess] = useState('');
+
   const canExport = currentUser && ['OWNER', 'MANAGER', 'FINANCE_OFFICER'].includes(currentUser.role);
+  const canManagePT = currentUser && ['OWNER', 'MANAGER', 'GENERAL_MANAGER'].includes(currentUser.role);
 
   const fetchMembers = async () => {
     setIsLoading(true);
@@ -46,6 +69,7 @@ export default function MembersPage() {
       let url = `/api/members?tenantId=${currentTenant.id}`;
       if (searchQuery) url += `&query=${encodeURIComponent(searchQuery)}`;
       if (statusFilter !== 'ALL') url += `&status=${statusFilter}`;
+      if (trainerFilter !== 'ALL') url += `&trainerId=${trainerFilter}`;
 
       const res = await fetch(url, {
         headers: {
@@ -64,11 +88,12 @@ export default function MembersPage() {
     }
   };
 
-  const fetchPlansAndLockers = async () => {
+  const fetchPlansLockersAndTrainers = async () => {
     try {
-      const [resPlans, resLockers] = await Promise.all([
+      const [resPlans, resLockers, resStaff] = await Promise.all([
         fetch(`/api/plans?tenantId=${currentTenant.id}`),
         fetch(`/api/lockers?tenantId=${currentTenant.id}`),
+        fetch(`/api/staff?tenantId=${currentTenant.id}`),
       ]);
       if (resPlans.ok) {
         const data = await resPlans.json();
@@ -78,6 +103,14 @@ export default function MembersPage() {
         const data = await resLockers.json();
         setLockers(data.lockers || []);
       }
+      if (resStaff.ok) {
+        const data = await resStaff.json();
+        const trainerUsers = (data.users || []).filter((u: User) => u.role === 'TRAINER');
+        setTrainers(trainerUsers);
+        if (trainerUsers.length > 0) {
+          setBookingForm((prev) => ({ ...prev, trainerId: trainerUsers[0].id }));
+        }
+      }
     } catch (e) {
       console.error(e);
     }
@@ -85,10 +118,10 @@ export default function MembersPage() {
 
   useEffect(() => {
     fetchMembers();
-  }, [currentTenant.id, searchQuery, statusFilter, currentUser?.role]);
+  }, [currentTenant.id, searchQuery, statusFilter, trainerFilter, currentUser?.role]);
 
   useEffect(() => {
-    fetchPlansAndLockers();
+    fetchPlansLockersAndTrainers();
   }, [currentTenant.id]);
 
   const handleRenewMember = async (memberId: string) => {
@@ -115,6 +148,69 @@ export default function MembersPage() {
       }
     } catch (e) {
       console.error('Renewal error', e);
+    }
+  };
+
+  const handleOpenBooking = (member: Member) => {
+    setBookingMember(member);
+    setBookingError('');
+    setBookingSuccess('');
+    if (trainers.length > 0 && !bookingForm.trainerId) {
+      setBookingForm((prev) => ({ ...prev, trainerId: trainers[0].id }));
+    }
+    setShowBookTrainerModal(true);
+  };
+
+  const handleBookTrainer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bookingMember || !bookingForm.trainerId) return;
+    setBookingLoading(true);
+    setBookingError('');
+    setBookingSuccess('');
+
+    const trainer = trainers.find((t) => t.id === bookingForm.trainerId);
+    if (!trainer) {
+      setBookingError('Please select a personal trainer');
+      setBookingLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/staff/assignments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tenantId: currentTenant.id,
+          trainerId: trainer.id,
+          trainerName: trainer.name,
+          memberId: bookingMember.id,
+          memberName: `${bookingMember.firstName} ${bookingMember.lastName}`,
+          memberNumber: bookingMember.memberNumber,
+          clientPhone: bookingMember.phone,
+          sessionsTotal: bookingForm.sessionsTotal,
+          feeETB: bookingForm.feeETB,
+          schedule: bookingForm.schedule,
+          startDate: bookingForm.startDate,
+          notes: bookingForm.notes,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setBookingSuccess(`Coach ${trainer.name} successfully booked for ${bookingMember.firstName}!`);
+        await fetchMembers();
+        setTimeout(() => {
+          setShowBookTrainerModal(false);
+          setBookingMember(null);
+          setBookingSuccess('');
+        }, 1500);
+      } else {
+        setBookingError(data.error || 'Failed to book trainer');
+      }
+    } catch {
+      setBookingError('Network error while booking personal trainer');
+    } finally {
+      setBookingLoading(false);
     }
   };
 
@@ -250,6 +346,24 @@ export default function MembersPage() {
             </button>
           ))}
         </div>
+
+        {/* Filter by Trainer */}
+        <div className="flex items-center gap-1.5 w-full md:w-auto">
+          <Dumbbell className="h-4 w-4 text-emerald-600 shrink-0" />
+          <select
+            value={trainerFilter}
+            onChange={(e) => setTrainerFilter(e.target.value)}
+            className="w-full md:w-auto rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 focus:border-teal-700 focus:outline-none"
+          >
+            <option value="ALL">All Trainers</option>
+            <option value="UNASSIGNED">No Trainer Assigned</option>
+            {trainers.map((t) => (
+              <option key={t.id} value={t.id}>
+                Coach: {t.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Members Table */}
@@ -261,6 +375,7 @@ export default function MembersPage() {
                 <th className="px-5 py-3.5">Member</th>
                 <th className="px-4 py-3.5">Phone / Contact</th>
                 <th className="px-4 py-3.5">Membership Plan</th>
+                <th className="px-4 py-3.5">Personal Trainer</th>
                 <th className="px-4 py-3.5">Expires On</th>
                 <th className="px-4 py-3.5">Status</th>
                 <th className="px-4 py-3.5">Locker</th>
@@ -271,13 +386,13 @@ export default function MembersPage() {
             <tbody className="divide-y divide-slate-100 text-slate-700">
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-slate-500">
+                  <td colSpan={9} className="text-center py-12 text-slate-500">
                     Loading member database...
                   </td>
                 </tr>
               ) : members.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-slate-500">
+                  <td colSpan={9} className="text-center py-12 text-slate-500">
                     No members found matching your filter.
                   </td>
                 </tr>
@@ -313,6 +428,37 @@ export default function MembersPage() {
                     {/* Plan */}
                     <td className="px-4 py-3.5">
                       <span className="font-semibold text-slate-900">{member.currentPlanName || 'No Plan'}</span>
+                    </td>
+
+                    {/* Personal Trainer */}
+                    <td className="px-4 py-3.5">
+                      {member.assignedTrainerName ? (
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 border border-emerald-200">
+                            <Dumbbell className="h-3 w-3 text-emerald-600" />
+                            <span>{member.assignedTrainerName}</span>
+                          </span>
+                          {canManagePT && (
+                            <button
+                              onClick={() => handleOpenBooking(member)}
+                              title="Reassign or Manage Trainer"
+                              className="text-slate-400 hover:text-emerald-700 transition-colors"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </button>
+                          )}
+                        </div>
+                      ) : canManagePT ? (
+                        <button
+                          onClick={() => handleOpenBooking(member)}
+                          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 transition-colors shadow-2xs"
+                        >
+                          <Plus className="h-3 w-3 text-emerald-600" />
+                          <span>Book Trainer</span>
+                        </button>
+                      ) : (
+                        <span className="text-slate-400 text-xs">-</span>
+                      )}
                     </td>
 
                     {/* Expiration */}
@@ -476,6 +622,158 @@ export default function MembersPage() {
           onClose={() => setShowNewModal(false)}
           onCreated={fetchMembers}
         />
+      )}
+
+      {/* Book Trainer Modal for Owner */}
+      {showBookTrainerModal && bookingMember && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-in fade-in duration-150">
+          <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                  <Dumbbell className="h-4 w-4" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-slate-900">Book Personal Trainer</h3>
+                  <p className="text-[11px] text-slate-500">Executive booking management for members</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowBookTrainerModal(false)}
+                className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {bookingError && (
+              <div className="mt-3 rounded-xl bg-rose-50 border border-rose-200 p-2.5 text-xs text-rose-800 font-semibold">
+                {bookingError}
+              </div>
+            )}
+            {bookingSuccess && (
+              <div className="mt-3 rounded-xl bg-emerald-50 border border-emerald-200 p-2.5 text-xs text-emerald-800 font-semibold">
+                {bookingSuccess}
+              </div>
+            )}
+
+            <form onSubmit={handleBookTrainer} className="mt-4 space-y-3.5 text-xs">
+              <div className="rounded-2xl bg-slate-50 p-3 border border-slate-100">
+                <span className="text-slate-500 text-[10px] uppercase font-bold block">Selected Trainee</span>
+                <span className="font-extrabold text-slate-900 text-sm block">
+                  {bookingMember.firstName} {bookingMember.lastName}
+                </span>
+                <span className="text-slate-500 text-[11px]">
+                  ID: {bookingMember.memberNumber} • Phone: {bookingMember.phone}
+                </span>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Select Personal Trainer *</label>
+                {trainers.length === 0 ? (
+                  <p className="text-xs text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                    No trainers registered yet. Go to Staff & Shifts to add a trainer first.
+                  </p>
+                ) : (
+                  <select
+                    value={bookingForm.trainerId}
+                    onChange={(e) => setBookingForm({ ...bookingForm, trainerId: e.target.value })}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-emerald-600 focus:outline-none font-semibold"
+                  >
+                    {trainers.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        Coach: {t.name} ({t.email})
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Session Count *</label>
+                  <select
+                    value={bookingForm.sessionsTotal}
+                    onChange={(e) => setBookingForm({ ...bookingForm, sessionsTotal: Number(e.target.value) })}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-emerald-600 focus:outline-none font-semibold"
+                  >
+                    <option value={5}>5 Sessions</option>
+                    <option value={10}>10 Sessions</option>
+                    <option value={15}>15 Sessions</option>
+                    <option value={20}>20 Sessions</option>
+                    <option value={30}>30 Sessions (Monthly VIP)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Booking Fee ({currentTenant?.currencySymbol || 'ETB'})
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="50"
+                    value={bookingForm.feeETB}
+                    onChange={(e) => setBookingForm({ ...bookingForm, feeETB: Number(e.target.value) || 0 })}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 font-bold focus:border-emerald-600 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Start Date *</label>
+                  <input
+                    type="date"
+                    required
+                    value={bookingForm.startDate}
+                    onChange={(e) => setBookingForm({ ...bookingForm, startDate: e.target.value })}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-emerald-600 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Training Schedule</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Mon, Wed, Fri 06:30"
+                    value={bookingForm.schedule}
+                    onChange={(e) => setBookingForm({ ...bookingForm, schedule: e.target.value })}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-emerald-600 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Training Goals & Medical Notes</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Weight loss, lower back rehab, competition prep"
+                  value={bookingForm.notes}
+                  onChange={(e) => setBookingForm({ ...bookingForm, notes: e.target.value })}
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-emerald-600 focus:outline-none"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowBookTrainerModal(false)}
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={bookingLoading || trainers.length === 0}
+                  className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-emerald-700 disabled:opacity-50"
+                >
+                  {bookingLoading ? 'Booking...' : 'Confirm Trainer Booking'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

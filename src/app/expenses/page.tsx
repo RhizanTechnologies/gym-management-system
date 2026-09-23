@@ -186,7 +186,7 @@ export default function ExpensesPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    return `${currentTenant.currencySymbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${currentTenant.currencySymbol} ${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   const getCategoryBadge = (category: string) => {
@@ -233,7 +233,7 @@ export default function ExpensesPage() {
             <h1 className="text-2xl font-black text-slate-900 tracking-tight">Expenses & Financial Ledger</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Server-enforced approval limits ($1,000 threshold for Managers), non-destructive audit voiding, and live P&L.
+            Server-enforced approval limits (ETB 1,000 threshold for Managers), non-destructive audit voiding, and live P&L.
           </p>
         </div>
 
@@ -261,14 +261,14 @@ export default function ExpensesPage() {
           </div>
           <div className="mt-3">
             <h2 className="text-3xl font-extrabold text-slate-900">
-              {summary ? formatCurrency(summary.grossRevenue) : '$0.00'}
+              {summary ? formatCurrency(summary.grossRevenue) : formatCurrency(0)}
             </h2>
             <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-slate-500">
-              <span>Plans: {summary ? formatCurrency(summary.membershipRevenue) : '$0'}</span>
+              <span>Plans: {summary ? formatCurrency(summary.membershipRevenue) : formatCurrency(0)}</span>
               <span>•</span>
-              <span>POS: {summary ? formatCurrency(summary.posRevenue) : '$0'}</span>
+              <span>POS: {summary ? formatCurrency(summary.posRevenue) : formatCurrency(0)}</span>
               <span>•</span>
-              <span>Lockers: {summary ? formatCurrency(summary.lockerRevenue) : '$0'}</span>
+              <span>Lockers: {summary ? formatCurrency(summary.lockerRevenue) : formatCurrency(0)}</span>
             </div>
           </div>
         </div>
@@ -283,7 +283,7 @@ export default function ExpensesPage() {
           </div>
           <div className="mt-3">
             <h2 className="text-3xl font-extrabold text-slate-900">
-              {summary ? formatCurrency(summary.totalExpenses) : '$0.00'}
+              {summary ? formatCurrency(summary.totalExpenses) : formatCurrency(0)}
             </h2>
             <p className="mt-2 text-[11px] text-slate-500">
               Approved operational costs (voided and rejected items are excluded)
@@ -302,7 +302,7 @@ export default function ExpensesPage() {
           </div>
           <div className="mt-3">
             <h2 className={`text-3xl font-extrabold ${summary && summary.netProfit >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
-              {summary ? formatCurrency(summary.netProfit) : '$0.00'}
+              {summary ? formatCurrency(summary.netProfit) : formatCurrency(0)}
             </h2>
             <p className="mt-2 text-[11px] text-slate-500">
               Current net margin after deducting approved gym expenses
@@ -479,7 +479,7 @@ export default function ExpensesPage() {
                             </span>
                             {isPending && isOverLimit && (
                               <span className="text-[9px] font-bold text-amber-800 bg-amber-50 px-1 rounded border border-amber-200">
-                                Owner/Finance Approval Req. (&gt;$1k)
+                                Owner/Finance Approval Req. (&gt;ETB 1,000)
                               </span>
                             )}
                           </div>
@@ -633,7 +633,7 @@ export default function ExpensesPage() {
                   {parseFloat(formData.amount) > 1000 && (
                     <p className="text-[10px] text-amber-700 mt-1 font-semibold flex items-center gap-1">
                       <ShieldAlert className="h-3 w-3" />
-                      Amount exceeds $1,000 threshold. Will require Owner or Finance Officer sign-off.
+                      Amount exceeds ETB 1,000 threshold. Will require Owner or Finance Officer sign-off.
                     </p>
                   )}
                 </div>
@@ -754,7 +754,7 @@ export default function ExpensesPage() {
                 </p>
                 {actionModal.expense.amount > 1000 && (
                   <p className="mt-2 text-[10px] font-bold text-amber-800 bg-amber-50 p-1.5 rounded border border-amber-200">
-                    Threshold Policy: Expenses exceeding $1,000 require Owner or Finance Officer authorization. Managers attempting approval will be blocked server-side.
+                    Threshold Policy: Expenses exceeding ETB 1,000 require Owner or Finance Officer authorization. Managers attempting approval will be blocked server-side.
                   </p>
                 )}
               </div>

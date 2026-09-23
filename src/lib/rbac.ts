@@ -263,8 +263,19 @@ export function getAuthenticatedUser(req: NextRequest | Request): AuthSessionUse
             tenantId: u.tenantId,
             name: u.name,
             email: u.email,
-            role: u.role,
+            role: (parsed.role as UserRole) || u.role,
             isActive: u.isActive,
+          };
+        }
+        // Fallback for serverless environments (Vercel) if user is not yet in memory cache
+        if (parsed.role) {
+          return {
+            id: parsed.userId,
+            tenantId: parsed.tenantId || 'tenant-1',
+            name: `${parsed.role} Authorized User`,
+            email: `${parsed.userId}@gymos.internal`,
+            role: parsed.role as UserRole,
+            isActive: true,
           };
         }
       }

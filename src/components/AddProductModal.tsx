@@ -110,7 +110,7 @@ export function AddProductModal({ tenant, onClose, onCreated }: AddProductModalP
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Selling Price ($) *</label>
+              <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Selling Price (ETB) *</label>
               <input
                 type="number"
                 required

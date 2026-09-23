@@ -15,6 +15,9 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
+  // Ensure fresh data is loaded from PostgreSQL when DATABASE_URL is set
+  await db.ensureLoaded();
+
   let rawMembers = db.getMembers(tenantId, query, status);
 
   // If role is MEMBER, enforce OWN_ONLY by restricting to their own profile
@@ -30,10 +33,44 @@ export async function GET(request: Request) {
     const trainerAssignments = db.getPTAssignments(tenantId, auth.user.id);
     const assignedMemberIds = new Set(trainerAssignments.map((a) => a.memberId));
     rawMembers = rawMembers.filter((m) => assignedMemberIds.has(m.id) || assignedMemberIds.has(m.memberNumber));
+  } else {
+    // Optional trainer filter for Owner / Managers
+    const trainerIdFilter = searchParams.get('trainerId');
+    if (trainerIdFilter) {
+      if (trainerIdFilter === 'UNASSIGNED') {
+        const allActiveAssignments = db.getPTAssignments(tenantId).filter((a) => a.status === 'ACTIVE');
+        const assignedIds = new Set(allActiveAssignments.map((a) => a.memberId));
+        rawMembers = rawMembers.filter(
+          (m) => !assignedIds.has(m.id) && !assignedIds.has(m.memberNumber) && !m.assignedTrainerId
+        );
+      } else {
+        const trainerAssignments = db.getPTAssignments(tenantId, trainerIdFilter).filter((a) => a.status === 'ACTIVE');
+        const assignedMemberIds = new Set(trainerAssignments.map((a) => a.memberId));
+        rawMembers = rawMembers.filter(
+          (m) => assignedMemberIds.has(m.id) || assignedMemberIds.has(m.memberNumber) || m.assignedTrainerId === trainerIdFilter
+        );
+      }
+    }
+  }
+
+  // Attach active trainer details from assignments
+  const activeAssignments = db.getPTAssignments(tenantId).filter((a) => a.status === 'ACTIVE');
+  const assignmentMap = new Map();
+  for (const a of activeAssignments) {
+    assignmentMap.set(a.memberId, a);
+    if (a.memberNumber) assignmentMap.set(a.memberNumber, a);
   }
 
   // Mask sensitive medical data based on caller role (Receptionist, Finance Officer, Maintenance)
-  const members = rawMembers.map((m) => db.maskMemberMedicalData(m, auth.user?.role));
+  const members = rawMembers.map((m) => {
+    const masked = db.maskMemberMedicalData(m, auth.user?.role);
+    const activePT = assignmentMap.get(m.id) || (m.memberNumber ? assignmentMap.get(m.memberNumber) : undefined);
+    if (activePT) {
+      masked.assignedTrainerId = activePT.trainerId;
+      masked.assignedTrainerName = activePT.trainerName;
+    }
+    return masked;
+  });
 
   return NextResponse.json({ members });
 }
@@ -127,6 +164,9 @@ export async function POST(request: Request) {
     );
 
     const safeMember = auth.user ? db.maskMemberMedicalData(member, auth.user.role) : member;
+
+    // Directly persist to PostgreSQL database before responding
+    await db.syncMemberToPostgres(member.id);
 
     return NextResponse.json(
       {

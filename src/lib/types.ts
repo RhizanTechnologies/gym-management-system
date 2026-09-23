@@ -183,6 +183,8 @@ export interface Member {
   daysRemaining?: number;
   dueBalance: number;
   assignedLockerNumber?: string;
+  assignedTrainerId?: string;
+  assignedTrainerName?: string;
   notificationOptIn?: boolean;
   marketingOptIn?: boolean;
   smsOptOut?: boolean;
@@ -555,6 +557,9 @@ export interface PersonalTrainingAssignment {
   remainingSessions?: number;
   sessionsTotal: number;
   sessionsRemaining: number;
+  feeETB?: number;
+  schedule?: string;
+  clientPhone?: string;
   status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
   notes?: string;
   assignedBy?: string;

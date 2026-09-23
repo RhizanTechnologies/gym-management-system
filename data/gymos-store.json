@@ -45,7 +45,9 @@
       "role": "OWNER",
       "isActive": true,
       "status": "ACTIVE",
-      "permissions": ["ALL"],
+      "permissions": [
+        "ALL"
+      ],
       "createdAt": "2026-06-25T19:53:41.479Z"
     }
   ],
@@ -113,22 +115,114 @@
   ],
   "members": [],
   "lockers": [
-    { "id": "lock-1", "tenantId": "tenant-1", "number": "L-01", "zone": "Cardio Zone", "status": "AVAILABLE" },
-    { "id": "lock-2", "tenantId": "tenant-1", "number": "L-02", "zone": "Cardio Zone", "status": "AVAILABLE" },
-    { "id": "lock-3", "tenantId": "tenant-1", "number": "L-03", "zone": "Cardio Zone", "status": "AVAILABLE" },
-    { "id": "lock-4", "tenantId": "tenant-1", "number": "L-04", "zone": "Free Weights", "status": "AVAILABLE" },
-    { "id": "lock-5", "tenantId": "tenant-1", "number": "L-05", "zone": "Free Weights", "status": "AVAILABLE" },
-    { "id": "lock-6", "tenantId": "tenant-1", "number": "L-06", "zone": "Free Weights", "status": "AVAILABLE" },
-    { "id": "lock-7", "tenantId": "tenant-1", "number": "L-07", "zone": "Main Floor", "status": "AVAILABLE" },
-    { "id": "lock-8", "tenantId": "tenant-1", "number": "L-08", "zone": "Main Floor", "status": "AVAILABLE" },
-    { "id": "lock-9", "tenantId": "tenant-1", "number": "L-09", "zone": "VIP Locker Room", "status": "AVAILABLE" },
-    { "id": "lock-10", "tenantId": "tenant-1", "number": "L-10", "zone": "VIP Locker Room", "status": "AVAILABLE" }
+    {
+      "id": "lock-1",
+      "tenantId": "tenant-1",
+      "number": "L-01",
+      "zone": "Cardio Zone",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-2",
+      "tenantId": "tenant-1",
+      "number": "L-02",
+      "zone": "Cardio Zone",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-3",
+      "tenantId": "tenant-1",
+      "number": "L-03",
+      "zone": "Cardio Zone",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-4",
+      "tenantId": "tenant-1",
+      "number": "L-04",
+      "zone": "Free Weights",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-5",
+      "tenantId": "tenant-1",
+      "number": "L-05",
+      "zone": "Free Weights",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-6",
+      "tenantId": "tenant-1",
+      "number": "L-06",
+      "zone": "Free Weights",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-7",
+      "tenantId": "tenant-1",
+      "number": "L-07",
+      "zone": "Main Floor",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-8",
+      "tenantId": "tenant-1",
+      "number": "L-08",
+      "zone": "Main Floor",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-9",
+      "tenantId": "tenant-1",
+      "number": "L-09",
+      "zone": "VIP Locker Room",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "lock-10",
+      "tenantId": "tenant-1",
+      "number": "L-10",
+      "zone": "VIP Locker Room",
+      "status": "AVAILABLE"
+    }
   ],
   "products": [
-    { "id": "pos-1", "tenantId": "tenant-1", "name": "Mineral Spring Water 500ml", "category": "DRINK", "price": 30, "stock": 50, "sku": "DRK-WAT-01" },
-    { "id": "pos-2", "tenantId": "tenant-1", "name": "Energy Drink 250ml", "category": "DRINK", "price": 120, "stock": 30, "sku": "DRK-ENG-01" },
-    { "id": "pos-3", "tenantId": "tenant-1", "name": "Whey Protein Shake", "category": "SUPPLEMENT", "price": 250, "stock": 20, "sku": "SUP-WHE-01" },
-    { "id": "pos-4", "tenantId": "tenant-1", "name": "Gym Fitness Towel", "category": "ACCESSORY", "price": 350, "stock": 25, "sku": "ACC-TWL-01" }
+    {
+      "id": "pos-1",
+      "tenantId": "tenant-1",
+      "name": "Mineral Spring Water 500ml",
+      "category": "DRINK",
+      "price": 30,
+      "stock": 50,
+      "sku": "DRK-WAT-01"
+    },
+    {
+      "id": "pos-2",
+      "tenantId": "tenant-1",
+      "name": "Energy Drink 250ml",
+      "category": "DRINK",
+      "price": 120,
+      "stock": 30,
+      "sku": "DRK-ENG-01"
+    },
+    {
+      "id": "pos-3",
+      "tenantId": "tenant-1",
+      "name": "Whey Protein Shake",
+      "category": "SUPPLEMENT",
+      "price": 250,
+      "stock": 20,
+      "sku": "SUP-WHE-01"
+    },
+    {
+      "id": "pos-4",
+      "tenantId": "tenant-1",
+      "name": "Gym Fitness Towel",
+      "category": "ACCESSORY",
+      "price": 350,
+      "stock": 25,
+      "sku": "ACC-TWL-01"
+    }
   ],
   "checkIns": [],
   "invoices": [],
@@ -147,7 +241,19 @@
   "maintenanceTickets": [],
   "staffShifts": [],
   "leads": [],
-  "auditEvents": [],
-  "ptAssignments": [],
-  "notifications": []
+  "auditEvents": [
+    {
+      "tenantId": "tenant-1",
+      "actorId": "user-1790200935666",
+      "actorName": "Coach Solomon",
+      "actorRole": "TRAINER",
+      "action": "USER_CREATE",
+      "entityType": "USER",
+      "entityId": "user-1790200935666",
+      "details": "New Personal Trainer 'Coach Solomon' joined the team (solomon@mfitnessgym.com)",
+      "id": "audit-1790200935676-gfu9a",
+      "timestamp": "2026-09-23T22:02:15.676Z"
+    }
+  ],
+  "ptAssignments": []
 }

@@ -80,8 +80,8 @@ const initialTenants: Tenant[] = [
     address: 'Downtown Commercial Center, 2nd Floor',
     phone: '+251 92 334 4556',
     email: 'info@ironforge.com',
-    currency: 'USD',
-    currencySymbol: '$',
+    currency: 'ETB',
+    currencySymbol: 'ETB',
     maxCapacity: 120,
     monthlySubscriptionFee: 149,
     planTier: 'ENTERPRISE',
@@ -1652,11 +1652,124 @@ class DataStorage {
         this.sales = [];
         this.staffShifts = [];
         this.leads = [];
-        this.ptAssignments = [];
+        // Preserve ptAssignments so personal trainer bookings persist across DB syncs
         this.maintenanceTickets = [];
       }
     } catch (e) {
       console.warn('Could not load from PostgreSQL:', e);
+    }
+  }
+
+  private loadedFromDbPromise: Promise<void> | null = null;
+
+  async ensureLoaded(): Promise<void> {
+    if (!process.env.DATABASE_URL || process.env.VITEST) return;
+    if (!this.loadedFromDbPromise) {
+      this.loadedFromDbPromise = this.loadFromPostgres();
+    }
+    await this.loadedFromDbPromise;
+  }
+
+  async syncUserToPostgres(userId: string): Promise<void> {
+    if (!process.env.DATABASE_URL || process.env.VITEST) return;
+    const u = this.users.find((item) => item.id === userId);
+    if (!u) return;
+    try {
+      await prisma.user.upsert({
+        where: { id: u.id },
+        update: {
+          name: u.name,
+          email: u.email.trim().toLowerCase(),
+          role: u.role,
+          phone: u.phone || null,
+        },
+        create: {
+          id: u.id,
+          tenantId: u.tenantId,
+          name: u.name,
+          email: u.email.trim().toLowerCase(),
+          role: u.role,
+          phone: u.phone || null,
+          password: 'password123',
+        },
+      });
+    } catch (err) {
+      console.warn('Direct syncUserToPostgres failed:', err);
+    }
+  }
+
+  async syncMemberToPostgres(memberId: string): Promise<void> {
+    if (!process.env.DATABASE_URL || process.env.VITEST) return;
+    const m = this.members.find((item) => item.id === memberId);
+    if (!m) return;
+    try {
+      await prisma.member.upsert({
+        where: { id: m.id },
+        update: {
+          memberNumber: m.memberNumber,
+          firstName: m.firstName,
+          lastName: m.lastName,
+          email: m.email || null,
+          phone: m.phone,
+          gender: m.gender || null,
+          dateOfBirth: m.dateOfBirth ? new Date(m.dateOfBirth) : null,
+          address: m.address || null,
+          joinDate: m.joinDate ? new Date(m.joinDate) : new Date(),
+          emergencyContactName: m.emergencyContactName || null,
+          emergencyContactRelationship: m.emergencyContactRelationship || null,
+          emergencyContactPhone: m.emergencyContactPhone || null,
+          medicalNotes: m.medicalNotes || null,
+          consentGiven: m.consentGiven !== false,
+          consentDate: m.consentDate ? new Date(m.consentDate) : null,
+          consentPolicyVersion: m.consentPolicyVersion || 'v1.0',
+          qrCodeToken: m.qrCodeToken,
+          profileImage: m.profileImage || null,
+          photoIdReference: m.photoIdReference || null,
+          notes: m.notes || null,
+          status: m.status || 'ACTIVE',
+          currentPlanId: m.currentPlanId || null,
+          currentPlanName: m.currentPlanName || null,
+          subscriptionStart: m.subscriptionStart ? new Date(m.subscriptionStart) : null,
+          subscriptionEnd: m.subscriptionEnd ? new Date(m.subscriptionEnd) : null,
+          daysRemaining: m.daysRemaining ?? 0,
+          dueBalance: m.dueBalance || 0,
+          assignedLockerNumber: m.assignedLockerNumber || null,
+        },
+        create: {
+          id: m.id,
+          tenantId: m.tenantId,
+          memberNumber: m.memberNumber,
+          firstName: m.firstName,
+          lastName: m.lastName,
+          email: m.email || null,
+          phone: m.phone,
+          gender: m.gender || null,
+          dateOfBirth: m.dateOfBirth ? new Date(m.dateOfBirth) : null,
+          address: m.address || null,
+          joinDate: m.joinDate ? new Date(m.joinDate) : new Date(),
+          emergencyContactName: m.emergencyContactName || null,
+          emergencyContactRelationship: m.emergencyContactRelationship || null,
+          emergencyContactPhone: m.emergencyContactPhone || null,
+          medicalNotes: m.medicalNotes || null,
+          consentGiven: m.consentGiven !== false,
+          consentDate: m.consentDate ? new Date(m.consentDate) : null,
+          consentPolicyVersion: m.consentPolicyVersion || 'v1.0',
+          qrCodeToken: m.qrCodeToken,
+          profileImage: m.profileImage || null,
+          photoIdReference: m.photoIdReference || null,
+          notes: m.notes || null,
+          status: m.status || 'ACTIVE',
+          currentPlanId: m.currentPlanId || null,
+          currentPlanName: m.currentPlanName || null,
+          subscriptionStart: m.subscriptionStart ? new Date(m.subscriptionStart) : null,
+          subscriptionEnd: m.subscriptionEnd ? new Date(m.subscriptionEnd) : null,
+          daysRemaining: m.daysRemaining ?? 0,
+          dueBalance: m.dueBalance || 0,
+          assignedLockerNumber: m.assignedLockerNumber || null,
+        },
+      });
+    } catch (err) {
+      console.warn('Direct syncMemberToPostgres failed:', err);
     }
   }
 
@@ -2025,6 +2138,13 @@ class DataStorage {
     this.syncFromDiskIfModified();
     if (!tenantId) return this.users;
     return this.users.filter((u) => u.tenantId === tenantId || u.role === 'SUPER_ADMIN');
+  }
+
+  addUser(user: User): void {
+    if (!this.users.some((u) => u.id === user.id || u.email.toLowerCase() === user.email.toLowerCase())) {
+      this.users.push(user);
+      this.persist();
+    }
   }
 
   getUserById(tenantIdOrUserId: string, userId?: string): User | undefined {
@@ -4259,22 +4379,45 @@ class DataStorage {
   // Personal Training Assignments
   getPTAssignments(tenantId: string, trainerId?: string): PersonalTrainingAssignment[] {
     this.syncFromDiskIfModified();
-    return this.ptAssignments.filter((a) => {
-      if (a.tenantId !== tenantId) return false;
-      if (trainerId && a.trainerId !== trainerId) return false;
-      return true;
-    });
+    return this.ptAssignments
+      .filter((a) => {
+        if (a.tenantId !== tenantId) return false;
+        if (trainerId && a.trainerId !== trainerId) return false;
+        return true;
+      })
+      .map((a) => {
+        if (!a.clientPhone) {
+          const mem = this.members.find((m) => m.id === a.memberId || m.memberNumber === a.memberNumber);
+          if (mem?.phone) a.clientPhone = mem.phone;
+        }
+        return a;
+      });
   }
 
   createPTAssignment(
     data: Omit<PersonalTrainingAssignment, 'id' | 'createdAt'>
   ): PersonalTrainingAssignment {
+    let clientPhone = data.clientPhone;
+    if (!clientPhone) {
+      const mem = this.members.find((m) => m.id === data.memberId || m.memberNumber === data.memberNumber);
+      if (mem?.phone) clientPhone = mem.phone;
+    }
+
     const assignment: PersonalTrainingAssignment = {
       ...data,
+      clientPhone,
       id: `pta-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       createdAt: new Date().toISOString(),
     };
     this.ptAssignments.unshift(assignment);
+
+    // Sync member assigned trainer
+    const memIdx = this.members.findIndex((m) => m.id === data.memberId || m.memberNumber === data.memberNumber);
+    if (memIdx !== -1) {
+      this.members[memIdx].assignedTrainerId = data.trainerId;
+      this.members[memIdx].assignedTrainerName = data.trainerName;
+    }
+
     this.persist();
     return assignment;
   }
@@ -4286,8 +4429,52 @@ class DataStorage {
     const idx = this.ptAssignments.findIndex((a) => a.id === id);
     if (idx === -1) return null;
     this.ptAssignments[idx] = { ...this.ptAssignments[idx], ...updates };
+
+    // If cancelled or completed, update member if no other active assignment exists
+    const current = this.ptAssignments[idx];
+    if (updates.status === 'CANCELLED' || updates.status === 'COMPLETED') {
+      const otherActive = this.ptAssignments.some(
+        (a) => a.id !== id && a.memberId === current.memberId && a.status === 'ACTIVE'
+      );
+      if (!otherActive) {
+        const memIdx = this.members.findIndex((m) => m.id === current.memberId || m.memberNumber === current.memberNumber);
+        if (memIdx !== -1) {
+          this.members[memIdx].assignedTrainerId = undefined;
+          this.members[memIdx].assignedTrainerName = undefined;
+        }
+      }
+    } else if (updates.trainerId && updates.trainerName) {
+      const memIdx = this.members.findIndex((m) => m.id === current.memberId || m.memberNumber === current.memberNumber);
+      if (memIdx !== -1) {
+        this.members[memIdx].assignedTrainerId = updates.trainerId;
+        this.members[memIdx].assignedTrainerName = updates.trainerName;
+      }
+    }
+
     this.persist();
     return this.ptAssignments[idx];
+  }
+
+  deletePTAssignment(id: string): boolean {
+    const idx = this.ptAssignments.findIndex((a) => a.id === id);
+    if (idx === -1) return false;
+    const removed = this.ptAssignments[idx];
+    this.ptAssignments.splice(idx, 1);
+
+    // Sync member
+    const otherActive = this.ptAssignments.some(
+      (a) => a.memberId === removed.memberId && a.status === 'ACTIVE'
+    );
+    if (!otherActive) {
+      const memIdx = this.members.findIndex((m) => m.id === removed.memberId || m.memberNumber === removed.memberNumber);
+      if (memIdx !== -1) {
+        this.members[memIdx].assignedTrainerId = undefined;
+        this.members[memIdx].assignedTrainerName = undefined;
+      }
+    }
+
+    this.persist();
+    return true;
   }
 
   // ================= PILLAR 1: LEADS & TRIAL BOOKINGS =================

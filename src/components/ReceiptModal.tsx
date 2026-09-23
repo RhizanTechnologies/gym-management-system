@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Invoice, InvoiceLineItem, Receipt, Tenant } from '@/lib/types';
-import { formatDate, formatTime } from '@/lib/utils';
+import { formatCurrency, formatDate, formatTime } from '@/lib/utils';
 import { X, Printer, CheckCircle2 } from 'lucide-react';
 
 interface ReceiptModalProps {
@@ -103,7 +103,7 @@ export function ReceiptModal({ invoice, receipt, tenant, onClose }: ReceiptModal
                 <span className="truncate pr-2">
                   {item.quantity > 1 ? `${item.quantity}x ` : ''}{item.description}
                 </span>
-                <span className="font-medium">${(item.total ?? item.subtotal ?? (item.unitPrice * item.quantity)).toFixed(2)}</span>
+                <span className="font-medium">{formatCurrency(item.total ?? item.subtotal ?? (item.unitPrice * item.quantity), tenant.currencySymbol, tenant.currency)}</span>
               </div>
             ))}
           </div>
@@ -114,32 +114,32 @@ export function ReceiptModal({ invoice, receipt, tenant, onClose }: ReceiptModal
               <>
                 <div className="flex justify-between text-slate-500">
                   <span>Subtotal:</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{formatCurrency(subtotal, tenant.currencySymbol, tenant.currency)}</span>
                 </div>
                 <div className="flex justify-between text-amber-700 font-medium">
                   <span>Discount Applied:</span>
-                  <span>-${discount.toFixed(2)}</span>
+                  <span>-{formatCurrency(discount, tenant.currencySymbol, tenant.currency)}</span>
                 </div>
               </>
             )}
             {tax > 0 && (
               <div className="flex justify-between text-slate-500">
                 <span>Tax:</span>
-                <span>${tax.toFixed(2)}</span>
+                <span>{formatCurrency(tax, tenant.currencySymbol, tenant.currency)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm font-black text-slate-900 font-sans border-t border-slate-100 pt-1.5">
               <span>NET TOTAL:</span>
-              <span>${totalAmount.toFixed(2)}</span>
+              <span>{formatCurrency(totalAmount, tenant.currencySymbol, tenant.currency)}</span>
             </div>
             <div className="flex justify-between text-teal-800 font-bold bg-teal-50/70 px-2 py-1 rounded">
               <span>PAID ({paymentMethod}):</span>
-              <span>${paidAmount.toFixed(2)}</span>
+              <span>{formatCurrency(paidAmount, tenant.currencySymbol, tenant.currency)}</span>
             </div>
             {balance > 0 ? (
               <div className="flex justify-between text-amber-800 font-bold bg-amber-50 px-2 py-1 rounded">
                 <span>OUTSTANDING BALANCE:</span>
-                <span>${balance.toFixed(2)}</span>
+                <span>{formatCurrency(balance, tenant.currencySymbol, tenant.currency)}</span>
               </div>
             ) : (
               <div className="flex items-center justify-center gap-1 text-teal-700 font-bold text-[10px] pt-1">

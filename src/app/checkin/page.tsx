@@ -6,7 +6,7 @@ import { useLanguage } from '@/lib/language-context';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Member, CheckInLog, CheckInStatus } from '@/lib/types';
 import { sounds } from '@/lib/audio';
-import { formatDate, formatTime } from '@/lib/utils';
+import { formatCurrency, formatDate, formatTime } from '@/lib/utils';
 import { MemberCardModal } from '@/components/MemberCardModal';
 import {
   QrCode,
@@ -777,7 +777,7 @@ export default function CheckInKioskPage() {
                   className="rounded-xl border border-rose-200 bg-rose-50 p-2 text-left hover:bg-rose-100 transition-all"
                 >
                   <p className="font-extrabold text-[11px] text-rose-800 truncate">Elias (Debt)</p>
-                  <p className="text-[10px] text-rose-700">Expired + $25</p>
+                  <p className="text-[10px] text-rose-700">Expired + 25 ETB</p>
                 </button>
                 <button
                   onClick={() => handleCheckIn('QR-AF-1006-DAWIT', 'QR_SCAN')}
@@ -1005,7 +1005,7 @@ export default function CheckInKioskPage() {
                       <div className="flex items-center gap-1.5 text-slate-700">
                         <DollarSign className="h-3.5 w-3.5 text-slate-800" />
                         <span>
-                          {t.dueBalance}: <strong>${lastCheckInResult.member.dueBalance}</strong>
+                          {t.dueBalance}: <strong>{formatCurrency(lastCheckInResult.member.dueBalance, currentTenant.currencySymbol, currentTenant.currency)}</strong>
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5 text-slate-700">
