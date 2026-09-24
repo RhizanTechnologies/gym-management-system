@@ -180,7 +180,7 @@ export default function DashboardPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                 Executive Dashboard
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
@@ -218,7 +218,7 @@ export default function DashboardPage() {
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition"
             >
               <FileSpreadsheet className="w-4 h-4 text-blue-500" />
-              <span>Reports & Export</span>
+              <span className="hidden sm:inline">Reports & Export</span>
             </Link>
 
             <Link
@@ -226,7 +226,7 @@ export default function DashboardPage() {
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition"
             >
               <Bell className="w-4 h-4 text-amber-500" />
-              <span>Notifications</span>
+              <span className="hidden sm:inline">Notifications</span>
             </Link>
 
             <button

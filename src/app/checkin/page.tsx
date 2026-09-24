@@ -542,13 +542,13 @@ export default function CheckInKioskPage() {
   };
 
   return (
-    <div className={isFullscreenKiosk ? 'fixed inset-0 z-50 bg-slate-50 p-6 overflow-y-auto' : 'space-y-6 pb-12'}>
+    <div className={isFullscreenKiosk ? 'fixed inset-0 z-50 bg-slate-50 p-3 sm:p-6 overflow-y-auto' : 'space-y-6 pb-12'}>
       {/* Kiosk Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <span className="flex h-3 w-3 rounded-full bg-emerald-600 animate-ping" />
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
               {isAmharic ? 'የኤም ፊትነስ ፈጣን መግቢያ ቼክ-ኢን' : 'M Fitness & Gym Front-Desk Check-In'}
             </h1>
           </div>
@@ -559,13 +559,13 @@ export default function CheckInKioskPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <LanguageToggle />
 
           {/* Fullscreen Kiosk Mode Button */}
           <button
             onClick={() => setIsFullscreenKiosk(!isFullscreenKiosk)}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-50 transition-all shadow-sm"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-50 transition-all shadow-sm"
             title="Toggle Unattended Tablet Podium Mode"
           >
             {isFullscreenKiosk ? (
@@ -582,18 +582,18 @@ export default function CheckInKioskPage() {
           </button>
 
           {/* Live Occupancy Meter */}
-          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 shadow-sm">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800 font-extrabold">
+          <div className="flex items-center gap-2.5 sm:gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 sm:px-4 py-2 shadow-sm">
+            <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800 font-extrabold">
               <Users className="h-4 w-4" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500">
                   {t.occupancy}
                 </span>
-                <span className="text-[11px] font-extrabold text-emerald-700">({occupancy.percentage}%)</span>
+                <span className="text-[10px] sm:text-[11px] font-extrabold text-emerald-700">({occupancy.percentage}%)</span>
               </div>
-              <p className="text-sm font-black text-slate-900">
+              <p className="text-xs sm:text-sm font-black text-slate-900">
                 {occupancy.current} <span className="text-xs font-normal text-slate-500">/ {occupancy.max} cap</span>
               </p>
             </div>
@@ -606,7 +606,7 @@ export default function CheckInKioskPage() {
         {/* Left Side: Scan & Input Terminal */}
         <div className="lg:col-span-7 space-y-6">
           {/* Scanner Input Card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
                 <QrCode className="h-4 w-4" /> {t.readyToScan}

@@ -157,3 +157,70 @@ body {
   animation-play-state: paused;
 }
 
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+/* Safe area insets for notched devices (iPhone X, etc.) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Touch-friendly minimum tap target (48x48 per WCAG) */
+@media (pointer: coarse) {
+  button, a, select, input[type="checkbox"], input[type="radio"] {
+    min-height: 44px;
+  }
+  
+  /* Slightly larger text on touch screens for readability */
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+}
+
+/* Horizontal scroll indicator shadow for tables */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-first responsive containers */
+@media (max-width: 640px) {
+  .type-display {
+    font-size: 28px;
+    line-height: 36px;
+  }
+  
+  .type-h1 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+  
+  .type-h2 {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  /* Ensure modals don't overflow on small screens */
+  .fixed.inset-0 > div {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* Tablet breakpoint adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .type-display {
+    font-size: 32px;
+    line-height: 40px;
+  }
+}
+
+/* Smooth momentum scrolling on iOS */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+

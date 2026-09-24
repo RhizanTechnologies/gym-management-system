@@ -158,13 +158,13 @@ export default function LeadsPage() {
   return (
     <div className="space-y-6 pb-12 font-sans">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-lg border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-lg border border-[#E5E7EB] bg-[#FFFFFF] p-4 sm:p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F8FAFC] border border-[#E5E7EB] text-[#0F766E]">
               <UserCheck className="h-4 w-4" />
             </span>
-            <h1 className="text-[22px] leading-[30px] font-bold text-[#1F2937]">Prospect Leads & Follow-Up Queue</h1>
+            <h1 className="text-[18px] sm:text-[22px] leading-[26px] sm:leading-[30px] font-bold text-[#1F2937]">Prospect Leads & Follow-Up Queue</h1>
           </div>
           <p className="text-[14px] leading-[20px] text-[#1F2937]/70 mt-1">
             Real-time prospective member registrations, trial requests, and admin inquiries for {currentTenant.name}.

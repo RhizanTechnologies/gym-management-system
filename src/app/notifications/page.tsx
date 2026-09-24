@@ -216,11 +216,11 @@ export default function NotificationsPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                 Automated Notifications & Renewal Notices
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
@@ -335,7 +335,7 @@ export default function NotificationsPage() {
       {/* Settings & Logs Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Notification Settings Panel */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm h-fit">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm h-fit">
           <div className="flex items-center gap-2 mb-4">
             <Settings className="w-5 h-5 text-slate-700 dark:text-slate-300" />
             <h2 className="text-base font-bold text-slate-900 dark:text-white">Notice Schedule & Rules</h2>
@@ -422,7 +422,7 @@ export default function NotificationsPage() {
         </div>
 
         {/* Notifications Activity Log */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm lg:col-span-2 flex flex-col">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm lg:col-span-2 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white">Notification History</h2>

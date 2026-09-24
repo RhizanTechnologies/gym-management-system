@@ -178,28 +178,28 @@ export default function MemberPortalPage() {
         </div>
 
         {/* Card Body */}
-        <div className="p-6 space-y-5 bg-white">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 bg-white">
           {/* Member Name & Expiry Countdown */}
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-black text-slate-900">
+              <h2 className="text-base sm:text-lg font-black text-slate-900">
                 {member.firstName} {member.lastName}
               </h2>
               <p className="text-xs text-slate-500 font-semibold">{member.currentPlanName}</p>
             </div>
             <div className="text-right">
               {member.status === 'ACTIVE' ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 sm:px-3 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">
                   <ShieldCheck className="h-3.5 w-3.5" />
                   <span>{isAmharic ? 'ንቁ (ACTIVE)' : 'ACTIVE'}</span>
                 </span>
               ) : member.status === 'EXPIRED' ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700 border border-rose-200">
+                <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 sm:px-3 py-1 text-xs font-bold text-rose-700 border border-rose-200">
                   <AlertTriangle className="h-3.5 w-3.5" />
                   <span>{isAmharic ? 'ጊዜው ያለቀበት (EXPIRED)' : 'EXPIRED'}</span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 border border-amber-200">
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 sm:px-3 py-1 text-xs font-bold text-amber-700 border border-amber-200">
                   <span>{member.status}</span>
                 </span>
               )}
@@ -212,11 +212,11 @@ export default function MemberPortalPage() {
           </div>
 
           {/* High-Contrast QR Code for Front Desk Scanner */}
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-inner">
-            <div className="rounded-2xl bg-white p-3.5 border-2 border-slate-300 shadow-md">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 shadow-inner">
+            <div className="rounded-2xl bg-white p-2.5 sm:p-3.5 border-2 border-slate-300 shadow-md">
               {qrUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={qrUrl} alt="QR Member Pass" className="h-56 w-56 object-contain" />
+                <img src={qrUrl} alt="QR Member Pass" className="h-48 w-48 sm:h-56 sm:w-56 object-contain" />
               ) : (
                 <div className="h-56 w-56 flex items-center justify-center text-xs text-slate-400">
                   Generating Pass...

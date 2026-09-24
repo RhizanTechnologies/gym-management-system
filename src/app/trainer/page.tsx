@@ -113,15 +113,15 @@ export default function TrainerDashboardPage() {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="rounded-3xl border border-slate-200 bg-gradient-to-r from-emerald-900 to-teal-800 p-6 sm:p-8 text-white shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="rounded-3xl border border-slate-200 bg-gradient-to-r from-emerald-900 to-teal-800 p-4 sm:p-6 md:p-8 text-white shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold backdrop-blur-sm mb-3">
             <Dumbbell className="h-3.5 w-3.5 text-emerald-300" />
             <span>Personal Trainer Portal</span>
             <span>•</span>
-            <span>{currentTenant.name}</span>
+            <span className="truncate max-w-[150px]">{currentTenant.name}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight">
             Welcome, Coach {currentUser?.name || 'Trainer'}!
           </h1>
           <p className="text-emerald-100/80 text-xs sm:text-sm mt-1 max-w-xl">
@@ -129,17 +129,17 @@ export default function TrainerDashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start md:self-auto">
-          <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 text-center min-w-[90px]">
-            <span className="block text-2xl font-black">{totalActiveTrainees}</span>
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full sm:w-auto">
+          <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-2.5 sm:p-3 text-center">
+            <span className="block text-xl sm:text-2xl font-black">{totalActiveTrainees}</span>
             <span className="text-[10px] text-emerald-200 uppercase font-semibold">Trainees</span>
           </div>
-          <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 text-center min-w-[90px]">
-            <span className="block text-2xl font-black">{totalSessionsRemaining}</span>
-            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Sessions Left</span>
+          <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-2.5 sm:p-3 text-center">
+            <span className="block text-xl sm:text-2xl font-black">{totalSessionsRemaining}</span>
+            <span className="text-[10px] text-emerald-200 uppercase font-semibold">Sessions</span>
           </div>
-          <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 text-center min-w-[90px]">
-            <span className="block text-2xl font-black">{totalSessionsConducted}</span>
+          <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-2.5 sm:p-3 text-center">
+            <span className="block text-xl sm:text-2xl font-black">{totalSessionsConducted}</span>
             <span className="text-[10px] text-emerald-200 uppercase font-semibold">Done</span>
           </div>
         </div>

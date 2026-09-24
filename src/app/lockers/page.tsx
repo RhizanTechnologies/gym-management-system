@@ -129,11 +129,11 @@ export default function LockersPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <KeyRound className="h-6 w-6 text-emerald-600" />
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Interactive Locker Matrix</h1>
+            <KeyRound className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Interactive Locker Matrix</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Real-time locker occupancy, member key assignment, and zone management.
@@ -181,7 +181,7 @@ export default function LockersPage() {
       </div>
 
       {/* Locker Matrix Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
         {filteredLockers.map((locker) => (
           <div
             key={locker.id}

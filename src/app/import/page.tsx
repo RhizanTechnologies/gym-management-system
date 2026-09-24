@@ -104,11 +104,11 @@ export default function PaperImportPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <FileSpreadsheet className="h-6 w-6 text-emerald-600" />
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+            <FileSpreadsheet className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
               Paper-to-Digital Migration Tool
             </h1>
           </div>
@@ -117,10 +117,10 @@ export default function PaperImportPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleDownloadTemplate}
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-sm"
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-sm"
           >
             <Download className="h-4 w-4 text-emerald-600" />
             <span>Download CSV Template</span>
@@ -132,7 +132,7 @@ export default function PaperImportPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Instructions & Paste Input */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+          <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm space-y-4">
             <h2 className="text-sm font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-2">
               <ClipboardPaste className="h-4 w-4 text-emerald-600" /> Step 1: Upload or Paste Data
             </h2>

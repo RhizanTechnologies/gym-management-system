@@ -155,11 +155,11 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header & Filter Controls */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                 Financial & Organizational Reports
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
@@ -317,7 +317,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Aged Accounts Receivable (Aged Debts) */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">Aged Accounts Receivable</h2>
@@ -368,7 +368,7 @@ export default function ReportsPage() {
       {/* Membership & Renewal Performance Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Membership Status Cohort */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
           <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4">Membership Lifecycle Status</h2>
           <div className="space-y-3 text-sm">
             <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40">
@@ -393,7 +393,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Renewal & Churn Metrics */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
           <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4">Retention & Conversion</h2>
           <div className="space-y-4">
             <div>

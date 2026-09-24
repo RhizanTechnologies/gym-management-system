@@ -365,13 +365,13 @@ export default function StaffManagementPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800">
               <Users2 className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Staff & Roster Management</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Staff & Roster Management</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Scoped access control, shift schedules, clock-in punctuality, and trainer personal coaching assignments.
@@ -395,7 +395,7 @@ export default function StaffManagementPage() {
                 className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-800 shadow-sm hover:bg-slate-50 transition-colors"
               >
                 <Dumbbell className="h-4 w-4 text-emerald-600" />
-                <span>Assign PT Client</span>
+                <span className="hidden sm:inline">Assign PT Client</span>
               </button>
 
               <button
@@ -406,7 +406,7 @@ export default function StaffManagementPage() {
                 className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-800 shadow-sm hover:bg-slate-50 transition-colors"
               >
                 <Calendar className="h-4 w-4 text-emerald-600" />
-                <span>Schedule Shift</span>
+                <span className="hidden sm:inline">Schedule Shift</span>
               </button>
 
               <button

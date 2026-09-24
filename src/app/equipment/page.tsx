@@ -343,14 +343,14 @@ export default function EquipmentPage() {
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800">
               <Wrench className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Equipment Assets & Maintenance</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Equipment Assets & Maintenance</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Searchable asset catalog, condition monitoring, safety hazard locking, and maintenance service history.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => {
               setTicketForm({
@@ -369,7 +369,8 @@ export default function EquipmentPage() {
             className="flex items-center gap-1.5 rounded-xl border border-rose-300 bg-rose-50 px-3.5 py-2.5 text-xs font-bold text-rose-800 shadow-sm hover:bg-rose-100 transition-colors"
           >
             <AlertTriangle className="h-4 w-4 text-rose-600" />
-            <span>Report Defect / Hazard</span>
+            <span className="hidden sm:inline">Report Defect / Hazard</span>
+            <span className="sm:hidden">Report Defect</span>
           </button>
 
           <button
@@ -377,10 +378,11 @@ export default function EquipmentPage() {
               setActionError(null);
               setShowAddEquipmentModal(true);
             }}
-            className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 sm:px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 transition-colors"
           >
             <Plus className="h-4 w-4" />
-            <span>Register Equipment</span>
+            <span className="hidden sm:inline">Register Equipment</span>
+            <span className="sm:hidden">Register</span>
           </button>
         </div>
       </div>

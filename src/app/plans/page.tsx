@@ -117,13 +117,13 @@ export default function PlansPage() {
   return (
     <div className="space-y-6 pb-12 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-lg border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-lg border border-[#E5E7EB] bg-[#FFFFFF] p-4 sm:p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F8FAFC] border border-[#E5E7EB] text-[#0F766E]">
               <Layers className="h-4 w-4" />
             </span>
-            <h1 className="text-[22px] leading-[30px] font-bold text-[#1F2937]">Membership Packages & Pricing</h1>
+            <h1 className="text-[18px] sm:text-[22px] leading-[26px] sm:leading-[30px] font-bold text-[#1F2937]">Membership Packages & Pricing</h1>
           </div>
           <p className="text-[14px] leading-[20px] text-[#1F2937]/70 mt-1">
             Configure flexible day passes, monthly access tiers, and VIP combinations for {currentTenant.name}.
@@ -165,7 +165,7 @@ export default function PlansPage() {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`rounded-lg border bg-[#FFFFFF] p-6 flex flex-col justify-between relative transition-all ${
+              className={`rounded-lg border bg-[#FFFFFF] p-4 sm:p-6 flex flex-col justify-between relative transition-all ${
                 plan.isPopular ? 'border-2 border-[#D97706]' : 'border-[#E5E7EB]'
               }`}
             >

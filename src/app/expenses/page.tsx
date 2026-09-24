@@ -230,7 +230,7 @@ export default function ExpensesPage() {
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800">
               <Receipt className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Expenses & Financial Ledger</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Expenses & Financial Ledger</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Server-enforced approval limits (ETB 1,000 threshold for Managers), non-destructive audit voiding, and live P&L.

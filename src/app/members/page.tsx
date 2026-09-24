@@ -253,20 +253,20 @@ export default function MembersPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-teal-100 text-teal-800">
               <Users className="h-4 w-4" />
             </span>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Members Directory</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Members Directory</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Manage membership plans, digital QR access tokens, and locker allocations for {currentTenant.name}.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setShowNewModal(true)}
             className="flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-teal-800 transition-all"
@@ -279,7 +279,7 @@ export default function MembersPage() {
             className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-50 transition-all shadow-sm"
           >
             <FileSpreadsheet className="h-4 w-4 text-teal-700" />
-            <span>Import Paper List</span>
+            <span className="hidden sm:inline">Import Paper List</span>
           </Link>
           {canExport && (
             <button

@@ -155,13 +155,13 @@ export default function POSBillingPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800">
               <Store className="h-4 w-4" />
             </span>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Point of Sale & Retail Billing</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Point of Sale & Retail Billing</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Sell beverages, supplements, personal training, and issue digital thermal receipts for {currentTenant.name}.
@@ -174,7 +174,8 @@ export default function POSBillingPage() {
             className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-50 transition-all shadow-sm"
           >
             <Receipt className="h-4 w-4 text-emerald-600" />
-            <span>Shift Closeout (Z-Report)</span>
+            <span className="hidden sm:inline">Shift Closeout (Z-Report)</span>
+            <span className="sm:hidden">Closeout</span>
           </button>
 
           <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1 border border-slate-200">
@@ -273,7 +274,7 @@ export default function POSBillingPage() {
           </div>
 
           {/* Right: Cart & Checkout */}
-          <div className="lg:col-span-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between space-y-4">
+          <div id="pos-cart-section" className="lg:col-span-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm flex flex-col justify-between space-y-4">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div className="flex items-center gap-2">
@@ -444,6 +445,27 @@ export default function POSBillingPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* Sticky Mobile Cart Bar */}
+      {activeTab === 'POS' && cart.length > 0 && (
+        <div className="lg:hidden fixed bottom-3 left-3 right-3 z-30 bg-emerald-900 text-white rounded-2xl p-3 shadow-2xl flex items-center justify-between border border-emerald-700 animate-in slide-in-from-bottom duration-200">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-white/20 font-bold text-xs">
+              {cart.reduce((a, b) => a + b.quantity, 0)}
+            </span>
+            <span className="text-xs font-semibold">Total: {formatCurrency(subtotal, currentTenant.currencySymbol, currentTenant.currency)}</span>
+          </div>
+          <button
+            onClick={() => {
+              const el = document.getElementById('pos-cart-section');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="rounded-xl bg-white text-emerald-900 px-3.5 py-1.5 text-xs font-extrabold shadow-sm active:scale-95 transition-transform"
+          >
+            Review & Pay →
+          </button>
         </div>
       )}
 

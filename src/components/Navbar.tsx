@@ -17,6 +17,8 @@ import {
   X,
   LayoutDashboard,
   Users,
+  UserCheck,
+  Bell,
   FileSpreadsheet,
   Layers,
   Store,
@@ -87,20 +89,26 @@ export function Navbar() {
 
   const navLinks = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'FINANCE_OFFICER'] },
+    { label: 'Leads & Enquiries', href: '/leads', icon: UserCheck, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST'] },
     { label: 'QR Check-In Kiosk', href: '/checkin', icon: QrCode, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST'] },
+    { label: 'My Trainees', href: '/trainer', icon: Dumbbell, roles: ['TRAINER'] },
     { label: 'Members', href: '/members', icon: Users, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'TRAINER', 'FINANCE_OFFICER'] },
     { label: 'Payments & POS', href: '/pos', icon: Store, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'FINANCE_OFFICER'] },
     { label: 'Expenses & P&L', href: '/expenses', icon: Receipt, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'FINANCE_OFFICER'] },
+    { label: 'Reports & Exports', href: '/reports', icon: FileSpreadsheet, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'FINANCE_OFFICER'] },
+    { label: 'Notifications', href: '/notifications', icon: Bell, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST'] },
     { label: 'Equipment & Assets', href: '/equipment', icon: Wrench, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'MAINTENANCE_STAFF', 'TRAINER'] },
     { label: 'Packages & Plans', href: '/plans', icon: Layers, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER'] },
-    { label: 'Staff & Shifts', href: '/staff', icon: ShieldCheck, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'MAINTENANCE_STAFF'] },
+    { label: 'Staff & Shifts', href: '/staff', icon: ShieldCheck, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'MAINTENANCE_STAFF', 'TRAINER'] },
     { label: 'Paper Importer', href: '/import', icon: FileSpreadsheet, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST'] },
     { label: 'Lockers', href: '/lockers', icon: KeyRound, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST'] },
     { label: 'Member Pass PWA', href: '/member-portal', icon: Smartphone, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'TRAINER', 'MAINTENANCE_STAFF', 'FINANCE_OFFICER', 'MEMBER'] },
+    { label: 'Platform Admin', href: '/super-admin', icon: Sparkles, roles: ['SUPER_ADMIN'] },
+    { label: 'My Profile', href: '/profile', icon: UserCircle, roles: ['SUPER_ADMIN', 'OWNER', 'GENERAL_MANAGER', 'RECEPTIONIST', 'FINANCE_OFFICER', 'TRAINER', 'MAINTENANCE_STAFF', 'MEMBER'] },
   ].filter((item) => item.roles.includes(role) || (role === 'OWNER' && item.roles.includes('GYM_OWNER')));
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[#E5E7EB] bg-white h-16 shadow-sm">
+    <header className="sticky top-0 z-40 w-full border-b border-[#E5E7EB] bg-white shadow-sm">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         {/* Left: Brand & Gym Selector */}
         <div className="flex items-center gap-3 sm:gap-4">
@@ -313,7 +321,24 @@ export function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#E5E7EB] bg-white p-3 space-y-1 shadow-md">
+        <div className="md:hidden border-t border-[#E5E7EB] bg-white p-3 space-y-1 shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto">
+          {/* Organization & Floor Occupancy for Mobile */}
+          <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-3 mb-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 truncate">
+                <span className="text-base">{currentTenant.logo || '🏋️'}</span>
+                <span className="font-bold text-[13px] text-[#1F2937] truncate">{currentTenant.name}</span>
+              </div>
+              <span className="rounded bg-[#0F766E]/10 px-1.5 py-0.5 text-[10px] font-bold text-[#0F766E] uppercase border border-[#0F766E]/20 shrink-0">
+                {currentTenant.planTier}
+              </span>
+            </div>
+            <div className="mt-2 flex items-center justify-between text-[11px] text-[#1F2937]/70 pt-2 border-t border-[#E5E7EB]">
+              <span>Occupancy: {occupancy.current}/{occupancy.max} ({occupancy.percentage}%)</span>
+              <span className="font-semibold text-[#0F766E]">{currentTenant.currencySymbol || currentTenant.currency || 'ETB'}</span>
+            </div>
+          </div>
+
           <div className="px-2.5 py-1 text-[11px] font-semibold uppercase text-[#1F2937]/50 tracking-wider">
             Workspace Navigation
           </div>
@@ -325,7 +350,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[14px] font-medium ${
+                className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[14px] font-medium transition-colors ${
                   isActive
                     ? 'bg-[#0F766E]/10 text-[#0F766E] font-semibold border-l-2 border-[#0F766E]'
                     : 'text-[#1F2937] hover:bg-[#F8FAFC]'
@@ -336,6 +361,29 @@ export function Navbar() {
               </Link>
             );
           })}
+
+          {currentUser && (
+            <div className="pt-2 mt-2 border-t border-[#E5E7EB] space-y-1">
+              <Link
+                href="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-semibold text-[#1F2937] hover:bg-[#F8FAFC]"
+              >
+                <UserCircle className="h-4 w-4 text-[#0F766E]" />
+                <span>My Profile ({currentUser.name})</span>
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  logout();
+                }}
+                className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50"
+              >
+                <LogOut className="h-4 w-4 text-rose-500" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
     </header>

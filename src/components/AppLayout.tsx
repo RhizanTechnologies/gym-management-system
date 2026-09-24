@@ -50,9 +50,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen bg-[#F8FAFC] text-[#1F2937]">
       <Navbar />
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 p-4 sm:p-6 max-w-[1440px] mx-auto w-full overflow-x-hidden">
+        <main className="flex-1 p-3 sm:p-4 md:p-6 max-w-[1440px] mx-auto w-full overflow-x-hidden overflow-y-auto safe-bottom">
           {children}
         </main>
       </div>

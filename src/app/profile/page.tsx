@@ -183,7 +183,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6 pb-12">
       {/* Page Header */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-2xl font-black uppercase shadow-lg">
             {(profile?.name || currentUser?.name || 'U').charAt(0)}
@@ -235,7 +235,7 @@ export default function ProfilePage() {
       {/* Profile Edit Form */}
       <form onSubmit={handleSaveProfile} className="space-y-6">
         {/* Personal Information */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2 pb-4 border-b border-slate-100">
             <UserIcon className="h-4 w-4 text-emerald-600" />
             Personal Information
@@ -301,7 +301,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Change Password Section */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100">
             <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
               <KeyRound className="h-4 w-4 text-emerald-600" />
